@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "457264498099",
+    "firebase_url": "https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "carertrackingapplication",
+    "storage_bucket": "carertrackingapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457264498099:android:51736c82a47252748f37c6",
+        "android_client_info": {
+          "package_name": "com.example.carertrackingapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457264498099-k1i41u3pgntdmta1t6clookkf8svrelo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carertrackingapplication",
+            "certificate_hash": "ce30362272f9f556466ce0abe454869805005691"
+          }
+        },
+        {
+          "client_id": "457264498099-43mqg7fuc2nd4ealc9m68eob6l19bicg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_lRZpeB22kcSlChjO6bwnB4eoQJ624LE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457264498099-43mqg7fuc2nd4ealc9m68eob6l19bicg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
