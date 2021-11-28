@@ -8,20 +8,6 @@
     >
 
 
-    <TextView
-        android:id="@+id/txt_username2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="-290dp"
-        android:layout_marginTop="15dp"
-        android:layout_weight="1"
-        android:text="Name"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/appointmentBtn"
         android:layout_width="115dp"
@@ -69,7 +55,6 @@
         android:background="@color/browser_actions_bg_grey"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:weighSum="4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -90,12 +75,11 @@
 
     <TextView
         android:id="@+id/txt_username"
-        android:layout_width="148dp"
-        android:layout_height="17dp"
-        android:layout_marginStart="-200dp"
+        android:layout_width="167dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="-150dp"
         android:layout_marginTop="15dp"
         android:layout_weight="1"
-        android:text="lagislgklskg skgos opgsk"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
@@ -104,16 +88,28 @@
 
     <TextView
         android:id="@+id/txt_ratingScore"
-        android:layout_width="160dp"
+        android:layout_width="166dp"
         android:layout_height="21dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="3dp"
         android:layout_weight="1"
-        android:text="Rating"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/txt_username"
-        app:layout_constraintStart_toStartOf="@+id/txt_username2"
-        app:layout_constraintTop_toBottomOf="@+id/txt_username2" />
+        app:layout_constraintStart_toStartOf="@+id/txt_username"
+        app:layout_constraintTop_toBottomOf="@+id/txt_username" />
+
+    <TextView
+        android:id="@+id/logoutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:text="Logout"
+        android:textColor="#FF5722"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toEndOf="@+id/txt_username"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
