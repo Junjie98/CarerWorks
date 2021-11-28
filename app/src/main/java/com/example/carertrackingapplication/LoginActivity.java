@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Registration Unsuccessful.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Login Unsuccessful.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

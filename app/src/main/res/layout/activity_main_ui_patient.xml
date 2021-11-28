@@ -4,7 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainUIPatientActivity">
+    tools:context=".MainUIPatientActivity"
+    >
+
+
+    <TextView
+        android:id="@+id/txt_username2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-290dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:text="Name"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/appointmentBtn"
@@ -27,12 +43,12 @@
         app:layout_constraintTop_toBottomOf="@+id/appointmentBtn" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/historyLogBtn"
         android:layout_width="126dp"
         android:layout_height="105dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="56dp"
-        android:src="@drawable/logicon"
+        android:src="@drawable/ic_baseline_history"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,5 +61,59 @@
         app:layout_constraintStart_toStartOf="@+id/appointmentBtn"
         app:layout_constraintTop_toBottomOf="@+id/appointmentBtn"
         app:srcCompat="@android:drawable/ic_dialog_map" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="408dp"
+        android:layout_height="75dp"
+        android:background="@color/browser_actions_bg_grey"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:weighSum="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="55dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="-350dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_baseline_account_circle_24"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/txt_username"
+        android:layout_width="148dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="-200dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:text="lagislgklskg skgos opgsk"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_ratingScore"
+        android:layout_width="160dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:text="Rating"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/txt_username"
+        app:layout_constraintStart_toStartOf="@+id/txt_username2"
+        app:layout_constraintTop_toBottomOf="@+id/txt_username2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

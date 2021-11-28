@@ -1,21 +1,32 @@
 package com.example.carertrackingapplication;
 
+//import static androidx.core.location.LocationManagerCompat.Api28Impl.isLocationEnabled;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +52,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -63,28 +80,56 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+   // private FirebaseAuth firebaseAuth;
+
+    //online geofire live dtb
+    DatabaseReference onlineReference, currentUserReference, driversLocationReference;
+    GeoFire geoFire;
+    ValueEventListener onlineValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if(snapshot.exists())
+                currentUserReference.onDisconnect().removeValue();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Snackbar.make(mapFragment.getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public void onDestroy() {
         mFusedLocationClient.removeLocationUpdates(locationCallback);
+        geoFire.removeLocation(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        onlineReference.removeEventListener(onlineValueEventListener);
         super.onDestroy();
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
+        registerOnlineSystem();
+    }
+
+    private void registerOnlineSystem() {
+        onlineReference.addValueEventListener(onlineValueEventListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //firebaseAuth = FirebaseAuth.getInstance(); //initiate the auth
 
         //binding = ActivityMapsTrackerBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_maps_tracker);
         CreateLocationRequest();
+
+
         // polylines = new ArrayList<>();
 
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -95,6 +140,14 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     }
 
     public void CreateLocationRequest() {
+        onlineReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child(".info/connected");
+        driversLocationReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation");
+        currentUserReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        geoFire = new GeoFire(driversLocationReference);
+
+        registerOnlineSystem();
+
         locationRequest = LocationRequest.create();
         locationRequest.setSmallestDisplacement(10f);
         locationRequest.setInterval(2000);
@@ -105,8 +158,20 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+
                 LatLng newCurPosition = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newCurPosition, 18f));
+
+                geoFire.setLocation(FirebaseAuth.getInstance().getUid(), new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()), new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        if(error != null){
+                            Snackbar.make(mapFragment.getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }else{
+                            Snackbar.make(mapFragment.getView(), "Success connected to realtime dtb & upload location", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         };
 
@@ -150,9 +215,10 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
                                 mFusedLocationClient.getLastLocation()
                                         .addOnFailureListener(e -> Toast.makeText(MapsTrackerActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show())
                                         .addOnSuccessListener(location -> {
-
-                                            LatLng userLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 18f));
+                                            if(location!= null) {
+                                                LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 18f));
+                                            }
                                         });
 
                                 return true;
