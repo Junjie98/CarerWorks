@@ -47,6 +47,7 @@
             android:label="@string/title_activity_maps_tracker" />
         <activity
             android:name=".MainUIPatientActivity"
+            android:launchMode = "singleTask"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"

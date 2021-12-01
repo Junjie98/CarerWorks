@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.carertrackingapplication.appinfo.User;
+import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,10 +29,21 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthenticationListener;
     private static postgresql db = new postgresql();
     @Override
+    public void onDestroy() {
+        User u = new User();
+        u.initializeUserInfo();
+        GlobalVar.current_user = u.getName();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userlogin); //above of logic
         loginUIView();
+//        User user = new User();
+//        user.initializeUserInfo();
+//        GlobalVar.current_user = user.getName();
 
         mAuth = FirebaseAuth.getInstance();
 

@@ -31,13 +31,14 @@ public class User {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        userName = (String) document.get("name");
-                        userEmail = (String) document.get("email");
-                        userGender = (String) document.get("gender");
-                        userDOB = (String) document.get("dob");
-                        userPhone = (String) document.get("phone");
-                        userRating = (String) document.get("rating");
-                        userType = (int) document.get("user_type");
+                        userName = document.get("name").toString();
+                        userEmail = document.get("email").toString();
+                        userGender = document.get("gender").toString();
+                        userDOB = document.get("dob").toString();
+                        userPhone = document.get("phone").toString();
+                        userRating = document.get("rating").toString();
+                        System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW     " + userName);
+                        //userType = (int) document.get("user_type");
 
                     } else {
                         Log.d(TAG, "No such document exist within the firebase database.");
@@ -52,7 +53,25 @@ public class User {
 
     //getters and setters
     public String getName(){
-
+        return userName;
+    }
+    public String getEmail(){
+        return userEmail;
+    }
+    public String getGender(){
+        return userGender;
+    }
+    public String getDOB(){
+        return userDOB;
+    }
+    public String getPhone(){
+        return userPhone;
+    }
+    public String getRating(){
+        return userRating;
+    }
+    public int getUserType(){
+        return userType;
     }
 
 }

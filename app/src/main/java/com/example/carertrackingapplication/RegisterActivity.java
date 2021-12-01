@@ -40,6 +40,11 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean patientFamily = false;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userregistration);
