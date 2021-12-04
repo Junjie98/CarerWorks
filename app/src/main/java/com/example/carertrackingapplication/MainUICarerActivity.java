@@ -7,31 +7,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.carertrackingapplication.appinfo.CarerInfo;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class MainUIPatientActivity extends AppCompatActivity {
+public class MainUICarerActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
     private ImageButton manageAppointment, mapTracker;
@@ -49,32 +43,32 @@ public class MainUIPatientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_ui_patient);
+        setContentView(R.layout.activity_main_uicarer);
         MainUISetup();
 
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
-        GlobalVar.current_user_id = firebaseAuth.getCurrentUser().getUid();
         setupUserInformation();
 
         mapTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this,MapsTrackerActivity.class));
+                startActivity(new Intent(MainUICarerActivity.this,MapsTrackerActivity.class));
             }
         });
+
 
         manageAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this, ManageAppointmentActivity.class));
+                startActivity(new Intent(MainUICarerActivity.this, ManageAppointmentActivity.class));
             }
         });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainUIPatientActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainUICarerActivity.this);
                 builder.setTitle("Sign Out")
                         .setMessage("Do you want to sign out?")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -87,7 +81,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(MainUIPatientActivity.this, LoginActivity.class);
+                                Intent intent = new Intent(MainUICarerActivity.this, LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
@@ -134,12 +128,8 @@ public class MainUIPatientActivity extends AppCompatActivity {
                         String gender = document.get("gender").toString();
                         String dob = document.get("dob").toString();
                         String phone = document.get("phone").toString();
-
-
-                        //String name = document.get("name").toString();
-                        //String rating =  document.get("rating").toString();
                         txt_username.setText(GlobalVar.current_user);
-                       // txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
+                        txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
 
 
                     } else {
@@ -160,14 +150,15 @@ public class MainUIPatientActivity extends AppCompatActivity {
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-               if(task.isSuccessful()){
-                   for(QueryDocumentSnapshot document:task.getResult()){
-                       System.out.println(document.get("name"));
-                   }
-               }else{
-                   System.out.println("Query Failed. Something is wrong.");
-               }
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document:task.getResult()){
+                        System.out.println(document.get("name"));
+                    }
+                }else{
+                    System.out.println("Query Failed. Something is wrong.");
+                }
             }
         });
     }
+
 }

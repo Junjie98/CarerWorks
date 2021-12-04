@@ -7,12 +7,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.carertrackingapplication.variable.GlobalVar;
+
 public class UserTypeActivity extends AppCompatActivity {
 
     private Button patientUserBtn, patientFamilyBtn, carerBtn;
     private static boolean carer = false;
     private static boolean patient = false;
     private static boolean patientFamily = false;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +36,7 @@ public class UserTypeActivity extends AppCompatActivity {
                 //RegisterActivity regisActivityPatient = new RegisterActivity();
                 //regisActivityPatient.setPatientBool(true);
                 patient = true;
+                GlobalVar.user_type = "patient";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }
         });
@@ -41,6 +50,7 @@ public class UserTypeActivity extends AppCompatActivity {
 //                RegisterActivity regisActivityPatient = new RegisterActivity();
 //                regisActivityPatient.setPatientFamilyBool(true);
                 patientFamily = true;
+                GlobalVar.user_type = "patientFamily";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }
         });
@@ -54,6 +64,7 @@ public class UserTypeActivity extends AppCompatActivity {
 //                RegisterActivity regisActivityPatient = new RegisterActivity();
 //                regisActivityPatient.setCarerBool(true);
                 carer = true;
+                GlobalVar.user_type = "carer";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }
         });

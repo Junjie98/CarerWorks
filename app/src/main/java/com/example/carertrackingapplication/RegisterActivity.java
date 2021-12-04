@@ -35,9 +35,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     //for database firestore
     private FirebaseFirestore fireStore;
-    private boolean carer = false;
-    private boolean patient = false;
-    private boolean patientFamily = false;
+//    private boolean carer = false;
+//    private boolean patient = false;
+//    private boolean patientFamily = false;
+
+    private String ratingAtCreated = "0.0";
 
     @Override
     protected void onDestroy() {
@@ -83,13 +85,10 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(RegisterActivity.this, "Registration Unsuccessful.", Toast.LENGTH_SHORT).show();
                             }else{
-                                //Toast.makeText(RegisterActivity.this, "Registration Unsuccessfully.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Registration Successfully.", Toast.LENGTH_SHORT).show();
                                 String user_id = firebaseAuth.getCurrentUser().getUid();
-                                System.out.println(user_id);
                                 UserTypeActivity a = new UserTypeActivity();
 
-                                System.out.println(a.getCarerBool());
-                                System.out.println(a.getPatientBool());
                                 //update the server as it differs from my json file during creation.
                                 DocumentReference docRef = fireStore.collection("users").document(user_id);
 
@@ -100,15 +99,22 @@ public class RegisterActivity extends AppCompatActivity {
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
-                                    user.put("password",userPassword);
+                                   // user.put("password",userPassword);
                                     user.put("dob",userDob);
                                     user.put("gender",userGender);
                                     user.put("phone",userPhone);
+                                    user.put("rating",ratingAtCreated);
                                     user.put("user_type", carertype);
                                     docRef.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Log.d(TAG,"onSuccess: profile is created for " + user_id);
+                                            try{
+                                                Thread.sleep(1000);
+                                                //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     });
                                     System.out.println("I am in carer database"); //role 0 admin, role 1 carer, role 2 patient, role 3 patient fam
@@ -119,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
-                                    user.put("password",userPassword);
+                                    //user.put("password",userPassword);
                                     user.put("dob",userDob);
                                     user.put("gender",userGender);
                                     user.put("phone",userPhone);
@@ -128,6 +134,12 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Log.d(TAG,"onSuccess: profile is created for " + user_id);
+                                            try{
+                                                Thread.sleep(1000);
+                                                //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     });
                                     System.out.println("I am in patient database");
@@ -139,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
-                                    user.put("password",userPassword);
+                                    //user.put("password",userPassword);
                                     user.put("dob",userDob);
                                     user.put("gender",userGender);
                                     user.put("phone",userPhone);
@@ -148,6 +160,12 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Log.d(TAG,"onSuccess: profile is created for " + user_id);
+                                            try{
+                                                Thread.sleep(1000);
+                                                //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     });
                                     System.out.println("I am in patientFamily database");
@@ -156,7 +174,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
 
-                    //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));//TEST. DELETE LATER
                 }
             }
         });
@@ -202,31 +219,5 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return validateResult;
     }
-
-    /////////// GETTERS AND SETTERS//////////////
-
-    public void setPatientBool(boolean t){
-        patient = t;
-    }
-    public void setPatientFamilyBool(boolean t){
-        patientFamily = t;
-    }
-    public void setCarerBool(boolean t){
-        carer = t;
-    }
-
-//    //whenever the activity is called, we are going to start the listener
-//    protected void onStart(){
-//        super.onStart();
-//        firebaseAuth.addAuthStateListener(firebaseAuthListener);
-//    }
-//
-//    //stop when we leave this activity
-//    protected void onStop() {
-//        super.onStop();
-//        firebaseAuth.addAuthStateListener(firebaseAuthListener);
-//    }
-//}
-
 
     }

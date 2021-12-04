@@ -21,6 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarerTrackingApplication">
         <activity
+            android:name=".MakeAppointment"
+            android:exported="false" />
+        <activity
+            android:name=".ManageAppointmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainUICarerActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".AppointmentActionTypeActivity"
             android:exported="false" />
         <activity
@@ -47,11 +57,12 @@
             android:label="@string/title_activity_maps_tracker" />
         <activity
             android:name=".MainUIPatientActivity"
-            android:launchMode = "singleTask"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -61,6 +72,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".googlemsgServices.firebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
