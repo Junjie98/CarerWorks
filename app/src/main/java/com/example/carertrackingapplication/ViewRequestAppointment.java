@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,7 +38,6 @@ public class ViewRequestAppointment extends AppCompatActivity {
     //he uses DatabaseReference database; i suppose that is to dblive
     //FirebaseFirestore fireStore;
     //MyAdapter myAdapter;
-    //ArrayList<Appointment> list;
     private FirestoreRecyclerAdapter adapter;
 
 
@@ -43,7 +45,6 @@ public class ViewRequestAppointment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_request_appointment);
-
 
         ImageButton imgBtn = (ImageButton)findViewById(R.id.backBtnViewReq);
         imgBtn.setOnClickListener(new View.OnClickListener() {
@@ -77,13 +78,21 @@ public class ViewRequestAppointment extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position, @NonNull Appointment model) {
-                //Appointment appointment = list.get(position);
                 holder.addressTV.setText(model.getAddress() + ", " + model.getPostcode());
                 holder.dateTV.setText(model.getDate());
                 holder.timeTV.setText(model.getTime());
                 holder.durationTV.setText(model.getDuration());
                 holder.nameTV.setText(model.getName());
                 holder.notesTV.setText(model.getNotes());
+                holder.position = holder.getAbsoluteAdapterPosition();
+                holder.userid = model.getUser_ID();
+                DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
+                holder.appointmentID = snapshot.getId();
+
+                //System.out.println(model.getUser_ID()+ " LOOOOOOOOOOOOOOOOOOOOOOOOOK");
+
+
+
             }
         };
 
@@ -97,6 +106,11 @@ public class ViewRequestAppointment extends AppCompatActivity {
     private class AppointmentViewHolder extends RecyclerView.ViewHolder{
 
         TextView addressTV, dateTV, timeTV, durationTV, nameTV, notesTV;
+        Button assignMeBtn;
+        Appointment app;
+        int position;
+        String userid;
+        String appointmentID;
 
         public AppointmentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,9 +121,32 @@ public class ViewRequestAppointment extends AppCompatActivity {
             durationTV = itemView.findViewById(R.id.appointManageViewDuration);
             nameTV = itemView.findViewById(R.id.appointManageViewName);
             notesTV = itemView.findViewById(R.id.appointManageViewNotes);
+            //assignMeBtn = findViewById(R.id.acceptPatientAppointmentBtn);
+
+            itemView.findViewById(R.id.acceptPatientAppointmentBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println(appointmentID);
+
+                    DocumentReference collRef = fireStore.collection("appointmentRequest").document(appointmentID);
+//                    String appointmentID = fireStore.collection("appointmentRequest").document().getId();
+//                    Query query = collRef.whereEqualTo("appointmentRequest",appointmentID);
+//                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if(task.isSuccessful()) {
+//
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    String Test = document.getId();
+//                                    System.out.println("THIS IS IT NELSON! " + Test);
+//                                }
+//                            }
+//                        }
+//                    });
+                }
+            });
         }
     }
-
     @Override
     protected void onStop() {
         super.onStop();

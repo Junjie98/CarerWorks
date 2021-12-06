@@ -83,6 +83,7 @@ public class MakeAppointment extends AppCompatActivity {
                     docRef.set(appointmentRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            System.out.println(docRef);
                             Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
                             Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
                             try{

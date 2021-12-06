@@ -1,9 +1,10 @@
 package com.example.carertrackingapplication.appinfo;
 
+import java.util.ArrayList;
+
 public class Appointment {
 
-    String address, date, time, duration, name, notes, postcode;
-
+    String address, date, time, duration, name, notes, postcode,user_id;
     private Appointment(){ //for firebase
 
     }
@@ -16,7 +17,15 @@ public class Appointment {
         this.postcode = postcode;
     }
 
-    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode){ //for us to retrieve data.
+    public String getUser_ID() {
+        return user_id;
+    }
+
+    public void setUser_ID(String user_id) {
+        this.user_id = user_id;
+    }
+
+    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode, String user_id){ //for us to retrieve data.
         this.address = address;
         this.date = date;
         this.time = time;
@@ -24,6 +33,7 @@ public class Appointment {
         this.name = name;
         this.notes = notes;
         this.postcode = postcode;
+        this.user_id = user_id;
     }
 
     public String getAddress() {
