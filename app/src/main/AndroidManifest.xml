@@ -21,6 +21,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarerTrackingApplication">
         <activity
+            android:name=".ViewRequestAppointment"
+            android:exported="false" />
+        <activity
+            android:name=".ViewAppointmentActivity"
+            android:exported="false" />
+        <activity
             android:name=".MakeAppointment"
             android:exported="false" />
         <activity

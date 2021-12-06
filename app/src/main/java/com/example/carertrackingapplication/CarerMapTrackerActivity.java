@@ -58,6 +58,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CarerMapTrackerActivity extends FragmentActivity implements OnMapReadyCallback {// NavigationView.OnNavigationItemSelectedListener {
 
@@ -141,14 +142,30 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
 
         locationRequest = LocationRequest.create();
         locationRequest.setSmallestDisplacement(10f);
-        locationRequest.setInterval(2000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(3000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+
+                //test jj
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 18f));
+                        //wayLatitude = location.getLatitude();
+                        //wayLongitude = location.getLongitude();
+                        //txtLocation.setText(String.format(Locale.US, "%s -- %s", wayLatitude, wayLongitude));
+                    }
+                }
+
+        //test jj
 
                 LatLng newCurPosition = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newCurPosition, 18f));
@@ -193,6 +210,10 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                                 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                           //added this to test below.
+                            ActivityCompat.requestPermissions(CarerMapTrackerActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    1000);
+                            //^^
                             return;
                         }
                         mMap.setMyLocationEnabled(true);

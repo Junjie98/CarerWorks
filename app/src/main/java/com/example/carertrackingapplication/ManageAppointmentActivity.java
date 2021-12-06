@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class ManageAppointmentActivity extends AppCompatActivity {
 
-    private Button makeAppointmentBtn;
+    private Button makeAppointmentBtn,viewAppointmentBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +24,17 @@ public class ManageAppointmentActivity extends AppCompatActivity {
             }
         });
 
+        viewAppointmentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ManageAppointmentActivity.this, ViewAppointmentActivity.class));
+            }
+        });
+
     }
 
     private void setupManageAppointment(){
         makeAppointmentBtn = findViewById(R.id.makeAppointmentBtn);
+        viewAppointmentBtn = findViewById(R.id.viewAppointmentBtn);
     }
 }

@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 if(a.getCarerBool()) {
                                     DatabaseReference current_user_db = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child("Carer").child((user_id));
-                                    current_user_db.setValue(true); //save it to the database ?
+                                    current_user_db.setValue(true); //save it to the database ? //CHECK RULES
                                     //DocumentReference docRef = fireStore.collection("users").document(user_id);
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);

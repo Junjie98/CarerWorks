@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -16,6 +18,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.carertrackingapplication.variable.GlobalVar;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -24,9 +29,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MakeAppointment extends AppCompatActivity {
 
+    public static final String TAG = "TAG";
     private TextView tvDate,tvTime;
     private EditText etDate,etTime,address,postcode,careDuration,toCarerNotes;
     private int timeHour, timeMinute;
@@ -54,7 +62,39 @@ public class MakeAppointment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(validationField()){
-                    DocumentReference docRef = fireStore.collection("users").document(GlobalVar.current_user_id);
+                    String addressSubmit = address.getText().toString().trim();
+                    String postcodeSubmit = postcode.getText().toString().trim();
+                    String dateSubmit = etDate.getText().toString().trim();
+                    String timeStoredSubmit = etTime.getText().toString().trim();
+                    String careDurationSubmit = careDuration.getText().toString().trim();
+                    String notesSubmit = toCarerNotes.getText().toString().trim();
+
+                    DocumentReference docRef = fireStore.collection("appointmentRequest").document();
+                    Map<String, Object> appointmentRequest = new HashMap<>();
+                    appointmentRequest.put("user_id",GlobalVar.current_user_id);
+                    appointmentRequest.put("name",GlobalVar.current_user);
+                    appointmentRequest.put("address",addressSubmit);
+                    appointmentRequest.put("postcode",postcodeSubmit);
+                    appointmentRequest.put("date",dateSubmit);
+                    appointmentRequest.put("time",timeStoredSubmit);
+                    appointmentRequest.put("duration",careDurationSubmit);
+                    appointmentRequest.put("notes",notesSubmit);
+                    appointmentRequest.put("status","pending");
+                    docRef.set(appointmentRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
+                            Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
+                            try{
+                                Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            startActivity(new Intent(MakeAppointment.this, MainUIPatientActivity.class));
+
+                        }
+                    });
                 }
             }
         });

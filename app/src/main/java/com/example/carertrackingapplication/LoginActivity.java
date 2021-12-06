@@ -76,12 +76,14 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                     Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
                                     if(typeNumber == 2){
+                                        GlobalVar.user_type = "patient";
                                         startActivity(new Intent(LoginActivity.this, MainUIPatientActivity.class));
                                         finish();
                                         return;
                                     }
                                     if (typeNumber == 1) {
                                         GlobalVar.user_rating = (String)document.get("rating");
+                                        GlobalVar.user_type = "carer";
                                         startActivity(new Intent(LoginActivity.this, MainUICarerActivity.class));
                                         finish();
                                         return;

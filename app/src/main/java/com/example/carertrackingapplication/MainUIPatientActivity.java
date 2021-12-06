@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +36,10 @@ public class MainUIPatientActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
     private ImageButton manageAppointment, mapTracker;
-    TextView txt_username, txt_ratingScore, logout;
+    TextView txt_username, txt_ratingScore, logout, labelUserNameViewAppoint;
     private FirebaseFirestore fireStore;
     private FirebaseAuth firebaseAuth;
+
 
 
     @Override
@@ -55,7 +57,10 @@ public class MainUIPatientActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
         GlobalVar.current_user_id = firebaseAuth.getCurrentUser().getUid();
+
         setupUserInformation();
+
+//        GlobalVar.current_user = fireStore.collection("users").document(GlobalVar.current_user_id).get(Source.valueOf("name")).toString();
 
         mapTracker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +119,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
         txt_username = (TextView) findViewById(R.id.txt_username);
         txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScore);
         logout = (TextView) findViewById(R.id.logoutBtn);
+
     }
 
     private void setupUserInformation(){
@@ -139,6 +145,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                         //String name = document.get("name").toString();
                         //String rating =  document.get("rating").toString();
                         txt_username.setText(GlobalVar.current_user);
+
                        // txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
 
 
@@ -153,6 +160,9 @@ public class MainUIPatientActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     private void queryUserType(int num){
         CollectionReference carerRef = fireStore.collection("users");

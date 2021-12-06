@@ -199,8 +199,8 @@
                 android:id="@+id/submitButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button"
-                android:layout_margin="100dp"/>
+                android:layout_margin="100dp"
+                android:text="Submit Request" />
 
         </LinearLayout>
 
