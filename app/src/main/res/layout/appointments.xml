@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="8dp"
-    app:cardCornerRadius="8dp"
-    android:layout_margin="16dp">
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#BCBCBC"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="30dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +26,7 @@
                 android:text="Date: "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewDate"
@@ -34,8 +35,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="5/12/2021"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -52,7 +52,7 @@
                 android:text="Time:  "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewTime"
@@ -61,8 +61,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="5/12/2021"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -79,7 +78,7 @@
                 android:text="Duration (hr): "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewDuration"
@@ -88,8 +87,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="2"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -106,7 +104,7 @@
                 android:text="Address: "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewAddress"
@@ -115,8 +113,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="Somewhere"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -133,7 +130,7 @@
                 android:text="Name: "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewName"
@@ -142,8 +139,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="PeopleName"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -160,7 +156,7 @@
                 android:text="Notes: "
                 android:textColor="@color/black"
                 android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/appointManageViewNotes"
@@ -169,8 +165,7 @@
                 android:layout_marginLeft="8dp"
                 android:text="blah blah"
                 android:textColor="@color/black"
-                android:textSize="23sp"
-                android:textStyle="bold"/>
+                android:textSize="23sp" />
 
 
         </LinearLayout>
@@ -186,7 +181,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Assign to Me" />
-
 
 
         </LinearLayout>

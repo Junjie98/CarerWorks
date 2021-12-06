@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.carertrackingapplication.variable.GlobalVar;
+
 public class ManageAppointmentActivity extends AppCompatActivity {
 
     private Button makeAppointmentBtn,viewAppointmentBtn;
@@ -27,7 +29,13 @@ public class ManageAppointmentActivity extends AppCompatActivity {
         viewAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ManageAppointmentActivity.this, ViewAppointmentActivity.class));
+                System.out.println("HERE I AM YOOOHOOOOO " + GlobalVar.user_type);
+                if(GlobalVar.user_type == "patient") {
+                    startActivity(new Intent(ManageAppointmentActivity.this, ViewAppointmentActivity.class));
+                }
+                if(GlobalVar.user_type == "carer"){
+                    startActivity(new Intent(ManageAppointmentActivity.this, ViewRequestAppointment.class));
+                }
             }
         });
 
