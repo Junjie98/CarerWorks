@@ -2,6 +2,7 @@ package com.example.carertrackingapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ViewRequestAppointment extends AppCompatActivity {
-
+    boolean assigned = false;
     public static final String TAG = "TAG";
     private RecyclerView recyclerView; //mFirestoreList
     private FirebaseFirestore fireStore;
@@ -45,6 +46,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
     //FirebaseFirestore fireStore;
     //MyAdapter myAdapter;
     private FirestoreRecyclerAdapter adapter;
+
 
 
     @Override
@@ -84,26 +86,41 @@ public class ViewRequestAppointment extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position, @NonNull Appointment model) {
-                holder.address = model.getAddress();
-                holder.postcode = model.getPostcode();
-                holder.date = model.getDate();
-                holder.time = model.getTime();
-                holder.duration = model.getDuration();
-                holder.name = model.getName();
-                holder.notes = model.getNotes();
 
-                holder.addressTV.setText(holder.address + ", " + holder.postcode);
-                holder.dateTV.setText(holder.date);
-                holder.timeTV.setText(holder.time);
-                holder.durationTV.setText(holder.duration);
-                holder.nameTV.setText(holder.name);
-                holder.notesTV.setText(holder.notes);
+                if(model.getStatus().equals("Assigned")){ //hide those that has already been assigned.
+                    assigned = true;
+                    holder.cardView.setVisibility(View.GONE);
+                    //notifyDataSetChanged();
+                    DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
+                    holder.appointmentID = snapshot.getId();
+                    System.out.println("HELLO JIALINGYI " + holder.appointmentID);
+                    return;
 
-                holder.position = holder.getAbsoluteAdapterPosition();
-                holder.userid = model.getUser_ID();
-                DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
-                holder.appointmentID = snapshot.getId();
+                }else {
+                    assigned = false;
+                    holder.cardView.setVisibility(View.VISIBLE);
+            //  notifyDataSetChanged();
+                    holder.address = model.getAddress();
+                    holder.postcode = model.getPostcode();
+                    holder.date = model.getDate();
+                    holder.time = model.getTime();
+                    holder.duration = model.getDuration();
+                    holder.name = model.getName();
+                    holder.notes = model.getNotes();
 
+                    holder.addressTV.setText(holder.address + ", " + holder.postcode);
+                    holder.dateTV.setText(holder.date);
+                    holder.timeTV.setText(holder.time);
+                    holder.durationTV.setText(holder.duration);
+                    holder.nameTV.setText(holder.name);
+                    holder.notesTV.setText(holder.notes);
+
+                    holder.position = holder.getAbsoluteAdapterPosition();
+                    holder.userid = model.getUser_ID();
+                    DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
+                    holder.appointmentID = snapshot.getId();
+
+                }
                 //System.out.println(model.getUser_ID()+ " LOOOOOOOOOOOOOOOOOOOOOOOOOK");
 
 
@@ -111,7 +128,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
             }
         };
 
-         recyclerView.setHasFixedSize(true);
+         recyclerView.setHasFixedSize(false);
          recyclerView.setLayoutManager(new LinearLayoutManager(this));
          recyclerView.setAdapter(adapter);
                 //view holder
@@ -123,13 +140,20 @@ public class ViewRequestAppointment extends AppCompatActivity {
         TextView addressTV, dateTV, timeTV, durationTV, nameTV, notesTV;
         Button assignMeBtn;
         Appointment app;
+
         int position;
         //String userid;
         String address, date, duration, name, notes, postcode,status,time,userid;
         String appointmentID;
+        CardView cardView;
 
         public AppointmentViewHolder(@NonNull View itemView) {
             super(itemView);
+           // if(assigned==true){
+                cardView = itemView.findViewById(R.id.appointmentRecyclerCardView);//.setVisibility(View.GONE);
+            //}
+           // else
+            //    itemView.findViewById(R.id.appointmentRecyclerCardView).setVisibility(View.VISIBLE);
 
             addressTV = itemView.findViewById(R.id.appointManageViewAddress);
             dateTV = itemView.findViewById(R.id.appointManageViewDate);
@@ -137,6 +161,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
             durationTV = itemView.findViewById(R.id.appointManageViewDuration);
             nameTV = itemView.findViewById(R.id.appointManageViewName);
             notesTV = itemView.findViewById(R.id.appointManageViewNotes);
+
             //assignMeBtn = findViewById(R.id.acceptPatientAppointmentBtn);
 
             itemView.findViewById(R.id.acceptPatientAppointmentBtn).setOnClickListener(new View.OnClickListener() {
@@ -231,4 +256,5 @@ public class ViewRequestAppointment extends AppCompatActivity {
         super.onStart();
         adapter.startListening();
     }
+
 }

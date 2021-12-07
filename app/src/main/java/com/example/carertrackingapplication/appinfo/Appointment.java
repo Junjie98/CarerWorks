@@ -4,9 +4,25 @@ import java.util.ArrayList;
 
 public class Appointment {
 
-    String address, date, time, duration, name, notes, postcode,user_id;
+    String address, date, time, duration, name, notes, postcode,user_id,status,carer_id;
     private Appointment(){ //for firebase
 
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCarer_id() {
+        return carer_id;
+    }
+
+    public void setCarer_id(String carer_id) {
+        this.carer_id = carer_id;
     }
 
     public String getPostcode() {
