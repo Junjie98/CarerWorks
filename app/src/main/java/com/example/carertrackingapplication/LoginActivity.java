@@ -84,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if (typeNumber == 1) {
                                         GlobalVar.user_rating = (String)document.get("rating");
                                         GlobalVar.user_type = "carer";
+                                        GlobalVar.current_user = (String)document.get("name");
+                                        GlobalVar.current_user_id = document.getId();
                                         startActivity(new Intent(LoginActivity.this, MainUICarerActivity.class));
                                         finish();
                                         return;

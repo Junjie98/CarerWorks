@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.carertrackingapplication.appinfo.AdapterRecyclerView.MyAdapter;
 import com.example.carertrackingapplication.appinfo.Appointment;
@@ -20,6 +22,7 @@ import com.example.carertrackingapplication.variable.GlobalVar;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,9 +33,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewRequestAppointment extends AppCompatActivity {
 
+    public static final String TAG = "TAG";
     private RecyclerView recyclerView; //mFirestoreList
     private FirebaseFirestore fireStore;
     //he uses DatabaseReference database; i suppose that is to dblive
@@ -78,12 +84,21 @@ public class ViewRequestAppointment extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position, @NonNull Appointment model) {
-                holder.addressTV.setText(model.getAddress() + ", " + model.getPostcode());
-                holder.dateTV.setText(model.getDate());
-                holder.timeTV.setText(model.getTime());
-                holder.durationTV.setText(model.getDuration());
-                holder.nameTV.setText(model.getName());
-                holder.notesTV.setText(model.getNotes());
+                holder.address = model.getAddress();
+                holder.postcode = model.getPostcode();
+                holder.date = model.getDate();
+                holder.time = model.getTime();
+                holder.duration = model.getDuration();
+                holder.name = model.getName();
+                holder.notes = model.getNotes();
+
+                holder.addressTV.setText(holder.address + ", " + holder.postcode);
+                holder.dateTV.setText(holder.date);
+                holder.timeTV.setText(holder.time);
+                holder.durationTV.setText(holder.duration);
+                holder.nameTV.setText(holder.name);
+                holder.notesTV.setText(holder.notes);
+
                 holder.position = holder.getAbsoluteAdapterPosition();
                 holder.userid = model.getUser_ID();
                 DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
@@ -109,7 +124,8 @@ public class ViewRequestAppointment extends AppCompatActivity {
         Button assignMeBtn;
         Appointment app;
         int position;
-        String userid;
+        //String userid;
+        String address, date, duration, name, notes, postcode,status,time,userid;
         String appointmentID;
 
         public AppointmentViewHolder(@NonNull View itemView) {
@@ -128,8 +144,65 @@ public class ViewRequestAppointment extends AppCompatActivity {
                 public void onClick(View v) {
                     System.out.println(appointmentID);
 
-                    DocumentReference collRef = fireStore.collection("appointmentRequest").document(appointmentID);
-//                    String appointmentID = fireStore.collection("appointmentRequest").document().getId();
+                    //DocumentReference docRef = fireStore.collection("appointmentRequest").document(appointmentID);
+
+
+                    Map<String, Object> appointmentRequestUpdate = new HashMap<>();
+                    appointmentRequestUpdate.put("carer_id", GlobalVar.current_user_id); //carer id.
+                    appointmentRequestUpdate.put("carer_name", GlobalVar.current_user); //carer name
+                    appointmentRequestUpdate.put("status", "Assigned");
+                    fireStore.collection("appointmentRequest").document(appointmentID)
+                            .update(appointmentRequestUpdate);
+//
+//                    appointmentRequestUpdate.put("user_id",nameTV);
+//                    appointmentRequestUpdate.put("name",nameTV);
+//                    appointmentRequestUpdate.put("address",addressSubmit);
+//                    appointmentRequestUpdate.put("postcode",postcodeSubmit);
+//                    appointmentRequestUpdate.put("date",dateSubmit);
+//                    appointmentRequestUpdate.put("time",timeStoredSubmit);
+//                    appointmentRequestUpdate.put("duration",careDurationSubmit);
+//                    appointmentRequestUpdate.put("notes",notesSubmit);
+//                    appointmentRequestUpdate.put("status","pending");
+//                    appointmentRequestUpdate.put("carer_id",GlobalVar.current_user_id);
+//                    appointmentRequestUpdate.put("carer_name",GlobalVar.current_user);
+//                    appointmentRequestUpdate.put("status","Assigned");
+
+
+//                    docRef.set(appointmentRequestUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void unused) {
+//                            System.out.println(docRef);
+//                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
+//                            Toast.makeText(ViewRequestAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
+//                            try{
+//                                Toast.makeText(ViewRequestAppointment.this, "This appointment " + appointmentID + " has been assigned to you.", Toast.LENGTH_SHORT).show();
+//                                Thread.sleep(2000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                            //startActivity(new Intent(ViewRequestAppointment.this, MainUIPatientActivity.class));
+//
+//                        }
+//                    });
+//                            collRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        //queryUserType();
+//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                        document.get
+//
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
+
 //                    Query query = collRef.whereEqualTo("appointmentRequest",appointmentID);
 //                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 //                        @Override

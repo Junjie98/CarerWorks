@@ -120,7 +120,7 @@ public class ViewAppointmentActivity extends AppCompatActivity {
                          addressLoad = document.get("address").toString();
                          postcodeLoad = document.get("postcode").toString();
                          statusLoad = document.get("status").toString();
-                         carerAssignedLoad = document.get("carer_assigned").toString();
+                         carerAssignedLoad = document.get("carer_name").toString();
 
 
                     }
