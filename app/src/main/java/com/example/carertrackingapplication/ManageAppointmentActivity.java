@@ -11,13 +11,24 @@ import com.example.carertrackingapplication.variable.GlobalVar;
 
 public class ManageAppointmentActivity extends AppCompatActivity {
 
-    private Button makeAppointmentBtn,viewAppointmentBtn;
+    private Button makeAppointmentBtn,viewAppointmentBtn, carerManageAppointmentReq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_appointment);
         setupManageAppointment();
+
+        if(GlobalVar.user_type == "carer"){
+            carerManageAppointmentReq.setVisibility(View.VISIBLE);
+            makeAppointmentBtn.setVisibility(View.GONE);
+        }
+        carerManageAppointmentReq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ManageAppointmentActivity.this, ViewRequestAppointment.class));
+            }
+        });
 
         makeAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,13 +40,10 @@ public class ManageAppointmentActivity extends AppCompatActivity {
         viewAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("HERE I AM YOOOHOOOOO " + GlobalVar.user_type);
-                if(GlobalVar.user_type == "patient") {
-                    startActivity(new Intent(ManageAppointmentActivity.this, ViewAppointmentActivity.class));
-                }
-                if(GlobalVar.user_type == "carer"){
-                    startActivity(new Intent(ManageAppointmentActivity.this, ViewRequestAppointment.class));
-                }
+
+                    startActivity(new Intent(ManageAppointmentActivity.this, viewAppointmentAll.class));
+
+
             }
         });
 
@@ -44,5 +52,6 @@ public class ManageAppointmentActivity extends AppCompatActivity {
     private void setupManageAppointment(){
         makeAppointmentBtn = findViewById(R.id.makeAppointmentBtn);
         viewAppointmentBtn = findViewById(R.id.viewAppointmentBtn);
+        carerManageAppointmentReq = findViewById(R.id.ManageAppointmentRequest);
     }
 }

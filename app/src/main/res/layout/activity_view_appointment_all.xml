@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewRequestAppointment">
+    tools:context=".viewAppointmentAll">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/backBtnViewAppointment"
@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:text="Appointment Request"
+                android:text="Confirmed Appointment"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -36,15 +36,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:text="Carers, please select the appointment based on your availablity and distance." />
+                android:text="Here are you appointments." />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/viewReqAppointmentRecyclerView"
+                android:id="@+id/viewAppointmentRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="771dp" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

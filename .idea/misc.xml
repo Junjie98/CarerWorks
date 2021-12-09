@@ -12,9 +12,10 @@
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout-w600dp/content_main.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_appointment_action_type.xml" value="0.2318840579710145" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_carer_map_tracker.xml" value="0.18432971014492755" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_carer_view_appointment_main.xml" value="0.14868421052631578" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main.xml" value="0.39057239057239057" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_ui.xml" value="0.2" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_ui_patient.xml" value="0.2" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_ui_patient.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_uicarer.xml" value="0.4" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_make_appointment.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_manage_appointment.xml" value="0.264" />
@@ -23,8 +24,9 @@
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_userlogin.xml" value="0.125" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_userregistration.xml" value="0.25" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_appointment.xml" value="0.2" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_appointment_all.xml" value="0.4" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_request_appointment.xml" value="0.264" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/appointments.xml" value="0.264" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/appointments.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/content_main.xml" value="0.152" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/fragment_reflow.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/fragment_settings.xml" value="0.24094202898550723" />
@@ -32,6 +34,7 @@
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/fragment_transform.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/item_transform.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/nav_header_main.xml" value="0.24094202898550723" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/view_appointment.xml" value="0.1" />
       </map>
     </option>
   </component>

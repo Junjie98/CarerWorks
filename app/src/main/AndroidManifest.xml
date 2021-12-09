@@ -21,6 +21,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarerTrackingApplication">
         <activity
+            android:name=".viewAppointmentAll"
+            android:exported="false" />
+        <activity
+            android:name=".CarerViewAppointmentMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ViewRequestAppointment"
             android:exported="false" />
         <activity
@@ -55,7 +61,8 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyC0tgOk763QcSZ4xlDpop-6pF-nKlxWgFI" />
+
 
         <activity
             android:name=".MapsTrackerActivity"

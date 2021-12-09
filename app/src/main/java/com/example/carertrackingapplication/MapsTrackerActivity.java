@@ -3,38 +3,27 @@ package com.example.carertrackingapplication;
 //import static androidx.core.location.LocationManagerCompat.Api28Impl.isLocationEnabled;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.carertrackingapplication.helperClass.GoogleDirectionAPIFetchURL;
+import com.example.carertrackingapplication.helperClass.CallbackOnTaskDone;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiClient;
 //import com.google.android.gms.common.internal.GoogleApiAvailabilityCache;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -48,9 +37,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 //import com.example.carertrackingapplication.databinding.ActivityMapsTrackerBinding;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,14 +52,16 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyCallback {// NavigationView.OnNavigationItemSelectedListener {
+public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyCallback, CallbackOnTaskDone {// NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
-    //Location mLastLocation;
+    Location mLastLocation;
     //LocationRequest mLocationRequest;
 
     //private ActivityMapsTrackerBinding binding;
@@ -81,10 +70,30 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
    // private FirebaseAuth firebaseAuth;
-
+    Polyline currentPolyline;
     //online geofire live dtb
-    DatabaseReference onlineReference, currentUserReference, driversLocationReference;
+    MarkerOptions place1,place2;
+    DatabaseReference onlineReference, currentUserReference, carerLocationReference;
     GeoFire geoFire;
+    FirebaseDatabase database;
+    Address myAddress;
+    LatLng myLatLng;
+    private static String address, postcode, carer_id, carerName;
+    DatabaseReference dataRef;
+    ArrayList<String> listCarerLocation = new ArrayList<>();
+    LatLng carerLatLng;
+    Location carerLocation;
+
+    public MapsTrackerActivity(String address, String postcode, String carer_id, String carerName){
+        this.address = address;
+        this.postcode = postcode;
+        this.carer_id = carer_id;
+        this.carerName = carerName;
+    }
+    public MapsTrackerActivity(){
+
+    }
+
     ValueEventListener onlineValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -125,6 +134,7 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
         //binding = ActivityMapsTrackerBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_maps_tracker);
         CreateLocationRequest();
+        getCarerLocationRequest();
 
 
         // polylines = new ArrayList<>();
@@ -136,15 +146,114 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        myAddress = geoLocation();
+        myLatLng = new LatLng(myAddress.getLatitude(),myAddress.getLongitude());
 
+        place1 = new MarkerOptions().position(new LatLng(myLatLng.latitude,myLatLng.longitude)).title("Provided Address");
+
+
+    }
+
+
+    private String getUrl(LatLng origin, LatLng destination, String directionMode){
+        //origin route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        //destination of route
+        String str_dest = "destination=" + destination.latitude + "," +destination.longitude;
+        //mode
+        String mode = "mode=" + directionMode;
+        //building the parameter to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        //output
+        String output = "json";
+        //Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        return url;
+    }
+
+    private Address geoLocation(){
+        String locationName = address + "," +postcode;
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(locationName, 1);
+
+            if(addressList.size()>0){ //if addressList is not empty, get the address of index 0
+                Address address = addressList.get(0);
+                System.out.println(address.getLatitude() + "," + address.getLongitude());
+                return address;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+
+    }
+
+    public void getCarerLocationRequest(){
+        database = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app");
+        dataRef = database.getReference("CarerLocation").child(carer_id).child("l");
+
+
+        // Attach a listener to read the data at our posts reference
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listCarerLocation.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double locationLat = 0;
+                    double locationLng = 0;
+                    if(map.get(0) != null){
+                        locationLat = Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1) != null){
+                        locationLng = Double.parseDouble(map.get(1).toString());
+                    }
+                    carerLatLng = new LatLng(locationLat,locationLng);
+//                    if(place2 != null){
+//                        place2.();
+//                    }
+
+                    carerLocation = new Location("");
+                    carerLocation.setLatitude(carerLatLng.latitude);
+                    carerLocation.setLongitude(carerLatLng.longitude);
+
+                    System.out.println(carerLocation.getLatitude()+ "," + carerLocation.getLongitude() + " YES I AM HERE");
+
+                    place2 = new MarkerOptions().position(new LatLng(carerLocation.getLatitude(),carerLocation.getLongitude()));
+                    mMap.clear();
+                    mMap.addMarker(place2);
+                    mMap.addMarker(place1);
+                    String url = getUrl(carerLatLng,myLatLng,"walking");
+                    new GoogleDirectionAPIFetchURL(MapsTrackerActivity.this).execute(url,"walking");
+                    //float distance = loc1.distanceTo(loc2);
+//                    place2 = new MarkerOptions().position(new LatLng(carerLocation.getLatitude(),carerLocation.getLongitude()));
+//                    //mMap.addMarker(place2);
+////                    String url = getUrl(myLatLng,carerLatLng,"walking");
+////                    new GoogleDirectionAPIFetchURL(MapsTrackerActivity.this).execute(url,"walking");
+
+                    //listCarerLocation.add(snapshot.getValue().toString());
+                    //System.out.println("VALIDATE = " + snapshot.getValue().toString());
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
     }
 
     public void CreateLocationRequest() {
         onlineReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child(".info/connected");
-        driversLocationReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation");
-        currentUserReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        carerLocationReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation");
+        currentUserReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("PatientLocation").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        geoFire = new GeoFire(driversLocationReference);
+        geoFire = new GeoFire(currentUserReference);
 
         registerOnlineSystem();
 
@@ -194,6 +303,7 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.addMarker(place1);
 
         Dexter.withContext(getApplicationContext())
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -260,8 +370,13 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     }
 
 
-
-
+    @Override
+    public void onTaskFinished(Object... values) {
+        if(currentPolyline!=null){
+            currentPolyline.remove();
+        }
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+    }
 }
 
 

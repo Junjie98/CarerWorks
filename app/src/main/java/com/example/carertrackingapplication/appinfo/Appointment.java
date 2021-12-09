@@ -4,7 +4,16 @@ import java.util.ArrayList;
 
 public class Appointment {
 
-    String address, date, time, duration, name, notes, postcode,user_id,status,carer_id;
+    String address, date, time, duration, name, notes, postcode,user_id,status,carer_id,carer_name;
+
+    public String getCarer_name() {
+        return carer_name;
+    }
+
+    public void setCarer_name(String carer_name) {
+        this.carer_name = carer_name;
+    }
+
     private Appointment(){ //for firebase
 
     }
@@ -41,7 +50,7 @@ public class Appointment {
         this.user_id = user_id;
     }
 
-    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode, String user_id){ //for us to retrieve data.
+    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode, String user_id, String carer_name, String carer_id){ //for us to retrieve data.
         this.address = address;
         this.date = date;
         this.time = time;
@@ -50,6 +59,8 @@ public class Appointment {
         this.notes = notes;
         this.postcode = postcode;
         this.user_id = user_id;
+        this.carer_name = carer_name;
+        this.carer_id = carer_id;
     }
 
     public String getAddress() {

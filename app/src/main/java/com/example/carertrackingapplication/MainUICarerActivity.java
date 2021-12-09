@@ -53,7 +53,7 @@ public class MainUICarerActivity extends AppCompatActivity {
         mapTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUICarerActivity.this,MapsTrackerActivity.class));
+                startActivity(new Intent(MainUICarerActivity.this,CarerMapTrackerActivity.class));
             }
         });
 

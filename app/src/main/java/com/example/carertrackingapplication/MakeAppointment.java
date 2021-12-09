@@ -7,6 +7,8 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,12 +26,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MakeAppointment extends AppCompatActivity {
@@ -55,6 +60,7 @@ public class MakeAppointment extends AppCompatActivity {
         validationField();
         submitData();
 
+
     }
 
     private void submitData(){
@@ -69,6 +75,7 @@ public class MakeAppointment extends AppCompatActivity {
                     String careDurationSubmit = careDuration.getText().toString().trim();
                     String notesSubmit = toCarerNotes.getText().toString().trim();
 
+                    geoLocation();
                     DocumentReference docRef = fireStore.collection("appointmentRequest").document();
                     Map<String, Object> appointmentRequest = new HashMap<>();
                     appointmentRequest.put("user_id",GlobalVar.current_user_id);
@@ -99,6 +106,22 @@ public class MakeAppointment extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void geoLocation(){
+        String locationName = address.getText().toString();
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(locationName, 1);
+
+            if(addressList.size()>0){ //if addressList is not empty, get the address of index 0
+                Address address = addressList.get(0);
+                System.out.println(address.getLatitude() + "," + address.getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validationField(){
