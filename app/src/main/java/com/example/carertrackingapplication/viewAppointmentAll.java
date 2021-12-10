@@ -7,17 +7,25 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.carertrackingapplication.appinfo.Appointment;
@@ -33,7 +41,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +54,10 @@ public class viewAppointmentAll extends AppCompatActivity {
     public static final String TAG = "TAG";
     private RecyclerView recyclerView; //mFirestoreList
     private FirebaseFirestore fireStore;
+    private int timeHour, timeMinute;
+    private String timeStore;
+    private String timeStoredReschedule, dateStoredReschedule,addressStoredReschedule, postcodeStoredReschedule, durationStoredReschedule;
+    private DatePickerDialog.OnDateSetListener setDateListener;
 
     private FirestoreRecyclerAdapter adapter;
     @Override
@@ -164,8 +178,10 @@ public class viewAppointmentAll extends AppCompatActivity {
                         holder.namePatient.setText(holder.name);
                         holder.notesTV.setText(holder.notes);
                         holder.statusTV.setText(holder.status);
-                        if(holder.status != "Assigned"){
 
+                        //allow changes to date and time if not assigned
+                        if(!holder.status.equals("Assigned")){
+                            holder.rescheduleBtn.setVisibility(View.VISIBLE);
                         }
                         holder.nameCarerTV.setText(holder.carerName);
 
@@ -223,6 +239,182 @@ public class viewAppointmentAll extends AppCompatActivity {
             routeBtn = itemView.findViewById(R.id.routeBtn);
             completeBtn = itemView.findViewById(R.id.completeAppBtn);
             rescheduleBtn = itemView.findViewById(R.id.rescheduleAppBtn);
+
+
+                rescheduleBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder rescheduleBuilder = new AlertDialog.Builder(viewAppointmentAll.this);
+                        rescheduleBuilder.setTitle("Reschedule");
+                        LinearLayout layout = new LinearLayout(viewAppointmentAll.this);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+
+                        /**time and date here**/
+                        final EditText editTime = new EditText(viewAppointmentAll.this);
+                        editTime.setText(time);
+                        final EditText editDate = new EditText(viewAppointmentAll.this);
+                        editDate.setText(date);
+                        final TextView getTimeLabel = new TextView(viewAppointmentAll.this);
+                        getTimeLabel.setText("Reschedule Time:");
+                        final TextView getDateLabel = new TextView(viewAppointmentAll.this);
+                        getDateLabel.setText("Reschedule Date:");
+
+                        /**address postcode and duration here**/
+                        final EditText editAddress = new EditText(viewAppointmentAll.this);
+                        editAddress.setText(address);
+                        final EditText editPostcode = new EditText(viewAppointmentAll.this);
+                        editPostcode.setText(postcode);
+                        final EditText editDuration = new EditText(viewAppointmentAll.this);
+                        editDuration.setText(duration);
+                        final TextView getAddressLabel = new TextView(viewAppointmentAll.this);
+                        getAddressLabel.setText("Change Address:");
+                        final TextView getPostcodeLabel = new TextView(viewAppointmentAll.this);
+                        getPostcodeLabel.setText("Change Postcode:");
+                        final TextView getDuration = new TextView(viewAppointmentAll.this);
+                        getDuration.setText("Change Duration(Hr):");
+
+
+                        rescheduleBuilder.setMessage("Reschedule time and date. Leave it as it is if unchanged.");
+
+                        //add everything in layout before prompting dialog.
+                        layout.addView(getTimeLabel);
+                        layout.addView(editTime);
+                        layout.addView(getDateLabel);
+                        layout.addView(editDate);
+
+                        layout.addView(getAddressLabel);
+                        layout.addView(editAddress);
+                        layout.addView(getPostcodeLabel);
+                        layout.addView(editPostcode);
+                        layout.addView(getDuration);
+                        layout.addView(editDuration);
+
+                        rescheduleBuilder.setView(layout);
+
+                        editTime.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(viewAppointmentAll.this,
+                                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                                        new TimePickerDialog.OnTimeSetListener(){
+
+                                            @Override
+                                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                                timeHour = hourOfDay;
+                                                timeMinute = minute;
+
+                                                String time = timeHour + ":" + timeMinute;
+
+                                                //initialise 24h format
+                                                SimpleDateFormat f24Hours = new SimpleDateFormat(
+                                                        "HH:mm"
+                                                );
+                                                try {
+                                                    Date date = f24Hours.parse(time);
+                                                    //initialise 12h format
+                                                    SimpleDateFormat f12Hours = new SimpleDateFormat(
+                                                            "hh:mm aa"
+                                                    );
+                                                    //Set selected time on editView
+                                                    editTime.setText(f24Hours.format(date));
+                                                    timeStore = f24Hours.format(date);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        },24,0,true
+                                );
+                                //set transparent background here
+                                timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                //display previous selected time
+                                timePickerDialog.updateTime(timeHour,timeMinute);
+                                //show
+                                timePickerDialog.show();
+                            }
+                        });
+
+                        timeStoredReschedule = editTime.getText().toString().trim().replaceAll(" ", "");
+
+                        //prompt for date
+                        Calendar calendar = Calendar.getInstance();
+                        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        final int month = calendar.get(Calendar.MONTH);
+                        final int year = calendar.get(Calendar.YEAR);
+
+                        editDate.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                        viewAppointmentAll.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,setDateListener,year,month,day);
+                                datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                datePickerDialog.show();
+                            }
+                        });
+
+                        setDateListener = new DatePickerDialog.OnDateSetListener(){
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                month = month+1;
+                                date = day+"/"+month+"/"+year;
+                                if(!date.equals(null)){ //if user has entered new date, get it and store.
+                                editDate.setText(date);
+                                dateStoredReschedule = editDate.getText().toString().trim();
+                                }
+                            }
+
+
+                        };
+                        //else, get default value set during initialised.
+                        dateStoredReschedule = editDate.getText().toString().trim();
+                        ///
+                        rescheduleBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        rescheduleBuilder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                addressStoredReschedule = editAddress.getText().toString();
+                                postcodeStoredReschedule = editPostcode.getText().toString();
+                                durationStoredReschedule = editDuration.getText().toString();
+                                if(!addressStoredReschedule.isEmpty() || !postcodeStoredReschedule.isEmpty() || !durationStoredReschedule.isEmpty() || !dateStoredReschedule.isEmpty() || !timeStoredReschedule.isEmpty()) {
+                                    System.out.println("new Time: " + timeStoredReschedule + " new Date: " + dateStoredReschedule);
+                                    Map<String, Object> appointmentRescheduleUpdate = new HashMap<>();
+                                    appointmentRescheduleUpdate.put("date", dateStoredReschedule); //carer id.
+                                    appointmentRescheduleUpdate.put("time", timeStoredReschedule); //carer name
+                                    appointmentRescheduleUpdate.put("address", addressStoredReschedule);
+                                    appointmentRescheduleUpdate.put("postcode", addressStoredReschedule);
+                                    appointmentRescheduleUpdate.put("duration", durationStoredReschedule);
+                                    fireStore.collection("appointmentRequest").document(appointmentID)
+                                            .update(appointmentRescheduleUpdate);
+                                }else {
+                                    Toast.makeText(viewAppointmentAll.this, "Please fill up all the fields before retying.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        })
+                                .setCancelable(false);
+                        AlertDialog dialog = rescheduleBuilder.create();
+                        dialog.setOnShowListener(dialog1 -> {
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                                    .setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                                    .setTextColor(getResources().getColor(android.R.color.holo_blue_light));
+                        });
+
+                        dialog.show();
+
+
+
+                    }
+                });
+
 
                 routeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -332,6 +524,7 @@ public class viewAppointmentAll extends AppCompatActivity {
 
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();

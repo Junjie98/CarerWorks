@@ -265,7 +265,8 @@
                     android:backgroundTint="#FFFFFF"
                     android:text="Complete"
                     android:textColor="#FF0000"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
 
             </RelativeLayout>
