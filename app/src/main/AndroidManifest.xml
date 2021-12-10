@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.carertrackingapplication">
+    package="com.example.carertrackingapplication" >
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CarerTrackingApplication">
+        android:theme="@style/Theme.CarerTrackingApplication" >
+        <activity
+            android:name=".settingActivity"
+            android:exported="false" />
         <activity
             android:name=".viewAppointmentAll"
             android:exported="false" />
@@ -63,7 +67,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC0tgOk763QcSZ4xlDpop-6pF-nKlxWgFI" />
 
-
         <activity
             android:name=".MapsTrackerActivity"
             android:exported="false"
@@ -78,7 +81,7 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -88,7 +91,7 @@
 
         <service
             android:name=".googlemsgServices.firebaseMessagingService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

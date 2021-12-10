@@ -3,12 +3,18 @@ package com.example.carertrackingapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -25,14 +31,29 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class MainUICarerActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
     private ImageButton manageAppointment, mapTracker;
-    TextView txt_username, txt_ratingScore, logout;
+    Button trackPatientAddressBtn,callPatientBtn;
+    TextView txt_username, txt_ratingScore, logout,dateField, statusField,timeField,durationField,carerField,addressField,patientField,notesField,upcomingAppointmentCarer;
     private FirebaseFirestore fireStore;
     private FirebaseAuth firebaseAuth;
+    private static String smallestDateAppointmentID;
+    String patientID, patientPhoneNum;
+    CardView cardViewCarerHome;
+    Date smallestDate = new Date();
+    boolean hasUpcoming = false;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onDestroy() {
@@ -49,6 +70,19 @@ public class MainUICarerActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
         setupUserInformation();
+        setupUpcomingAppointmentUI();
+        System.out.println(smallestDateAppointmentID);
+
+        if(hasUpcoming){
+            upcomingAppointmentCarer.setVisibility(View.VISIBLE);
+            cardViewCarerHome.setVisibility(View.VISIBLE);
+        }
+        //reload the upcoming if returned to page
+        if(smallestDateAppointmentID != null){
+            fillCardView();
+            upcomingAppointmentCarer.setVisibility(View.VISIBLE);
+            cardViewCarerHome.setVisibility(View.VISIBLE);
+        }
 
         mapTracker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +96,23 @@ public class MainUICarerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainUICarerActivity.this, ManageAppointmentActivity.class));
+            }
+        });
+
+        callPatientBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + patientPhoneNum));
+                System.out.println("tel:" + patientPhoneNum);
+
+
+                if (ActivityCompat.checkSelfPermission(MainUICarerActivity.this,
+                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("NOPE");
+                    return;
+                }
+                startActivity(callIntent);
             }
         });
 
@@ -106,8 +157,120 @@ public class MainUICarerActivity extends AppCompatActivity {
         manageAppointment = (ImageButton)findViewById(R.id.appointmentBtn);
         mapTracker = (ImageButton)findViewById(R.id.mapTrackerBtn);
         txt_username = (TextView) findViewById(R.id.txt_username);
-        txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScore);
+        txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScoreCarer);
         logout = (TextView) findViewById(R.id.logoutBtn);
+
+        dateField = findViewById(R.id.viewAppointDatecarerui);
+        statusField = findViewById(R.id.statusTextcarerui);
+        timeField = findViewById(R.id.appointManageViewDatecarerui);
+        durationField = findViewById(R.id.durationAreacarerui);
+        carerField = findViewById(R.id.carerAssignedFieldcarerui);
+        addressField = findViewById(R.id.viewAddressPostcodecarerui);
+        patientField = findViewById(R.id.PatientNameFieldcarerui);
+        notesField = findViewById(R.id.notesFieldcarerui);
+        trackPatientAddressBtn = findViewById(R.id.trackHomePageAppointmentBtn);
+        callPatientBtn = findViewById(R.id.callHomePageCarerBtn);
+        cardViewCarerHome = findViewById(R.id.cardViewPatientMain);
+        upcomingAppointmentCarer = findViewById(R.id.upcommingAppointmentLabel);
+    }
+
+    private void fillCardView(){
+        DocumentReference getUpcoming = fireStore.collection("appointmentRequest").document(smallestDateAppointmentID);
+        getUpcoming.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        dateField.setText(document.get("date").toString());
+                        statusField.setText(document.get("status").toString());
+                        timeField.setText(document.get("time").toString());
+                        durationField.setText(document.get("duration").toString());
+                        carerField.setText(document.get("carer_name").toString());
+                        addressField.setText(document.get("address").toString() + ", " + document.get("postcode").toString());
+                        patientField.setText(document.get("name").toString());
+                        notesField.setText(document.get("notes").toString());
+                        patientID = document.get("user_id").toString();
+
+                        DocumentReference docRef = fireStore.collection("users").document(patientID);
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        patientPhoneNum = document.get("phone").toString();
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
+
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void setupUpcomingAppointmentUI(){
+
+        Query query = fireStore.collection("appointmentRequest").whereEqualTo("status","Assigned").whereEqualTo("carer_id",GlobalVar.current_user_id);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    ArrayList<Date> dateCheck = new ArrayList<>();
+                    ArrayList<String> upcomingID = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        try {
+                            Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
+                            Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", ""));
+                            System.out.println(b +  "  THIS IS DATE");
+                            System.out.println(" this is today's date " + d);
+                            if(d.before(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", "")))) {
+                                System.out.println("HEREERERERERE " + document.getId() + "  === " + document.get("time").toString().replace(" ", ""));
+                                dateCheck.add(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() + " " + document.get("time").toString().replace(" ", "")));
+                                upcomingID.add(document.getId());
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("HERE IS THE SIZE " + dateCheck.size());
+                    if(dateCheck.size()>1) {
+                        for (int i = 0; i < dateCheck.size(); i++) { //find earliest date from patient's assigned appointment
+                            for (int j = 0; j < dateCheck.size(); j++) {
+                                if (dateCheck.get(i).before(dateCheck.get(j))) {
+                                    smallestDate = dateCheck.get(i);
+                                    smallestDateAppointmentID = upcomingID.get(i);
+                                    System.out.println("aaaaaaaaaaaaaaaaglspglapslggggggggggggggggggg " + smallestDateAppointmentID);
+                                    fillCardView();
+                                    upcomingAppointmentCarer.setVisibility(View.VISIBLE);
+                                    cardViewCarerHome.setVisibility(View.VISIBLE);
+                                    hasUpcoming = true;
+                                }
+                            }
+                        }
+                    } else if(dateCheck.size() != 0) {
+                        smallestDateAppointmentID = upcomingID.get(0);
+                        fillCardView();
+                        upcomingAppointmentCarer.setVisibility(View.VISIBLE);
+                        cardViewCarerHome.setVisibility(View.VISIBLE);
+                        hasUpcoming = true;
+                        System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
+                    } else
+                        cardViewCarerHome.setVisibility(View.GONE);
+                        upcomingAppointmentCarer.setVisibility(View.GONE);
+                    hasUpcoming = false;
+
+                }
+            }
+        });
     }
 
     private void setupUserInformation(){

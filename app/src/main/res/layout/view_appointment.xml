@@ -60,7 +60,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/statusText"
+                    android:id="@+id/statusTextpatientui"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/statusLabel"
@@ -111,7 +111,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/durationArea"
+                    android:id="@+id/durationAreaPatientUi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/timeLabel"
@@ -182,7 +182,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/PatientNameField"
+                    android:id="@+id/PatientNameFieldpatientui"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/addressPostcodeLabel"
@@ -241,7 +241,8 @@
                     android:backgroundTint="#FFFFFF"
                     android:text="Reschedule"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/routeBtn"
@@ -256,13 +257,13 @@
                     android:visibility="gone" />
 
                 <Button
-                    android:id="@+id/deleteAppBtn"
+                    android:id="@+id/completeAppBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="Delete"
+                    android:text="Complete"
                     android:textColor="#FF0000"
                     android:textSize="15sp" />
 

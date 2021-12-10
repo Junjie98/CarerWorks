@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.carertrackingapplication.variable.GlobalVar;
 
 public class ManageAppointmentActivity extends AppCompatActivity {
 
     private Button makeAppointmentBtn,viewAppointmentBtn, carerManageAppointmentReq;
+    private ImageButton backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,13 @@ public class ManageAppointmentActivity extends AppCompatActivity {
             }
         });
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         makeAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,8 +49,7 @@ public class ManageAppointmentActivity extends AppCompatActivity {
         viewAppointmentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    startActivity(new Intent(ManageAppointmentActivity.this, viewAppointmentAll.class));
+                startActivity(new Intent(ManageAppointmentActivity.this, viewAppointmentAll.class));
 
 
             }
@@ -53,5 +61,6 @@ public class ManageAppointmentActivity extends AppCompatActivity {
         makeAppointmentBtn = findViewById(R.id.makeAppointmentBtn);
         viewAppointmentBtn = findViewById(R.id.viewAppointmentBtn);
         carerManageAppointmentReq = findViewById(R.id.ManageAppointmentRequest);
+        backBtn = findViewById(R.id.backBtn);
     }
 }

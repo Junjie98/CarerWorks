@@ -1,28 +1,40 @@
 package com.example.carertrackingapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.carertrackingapplication.appinfo.Appointment;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,10 +67,12 @@ public class viewAppointmentAll extends AppCompatActivity {
         //Query
         Query query = fireStore.collection("appointmentRequest").orderBy("date",Query.Direction.ASCENDING);
 
+
         //RecyclerOptions
         FirestoreRecyclerOptions<Appointment> options = new FirestoreRecyclerOptions.Builder<Appointment>()
                 .setQuery(query, Appointment.class)
                 .build();
+
 
 
         //now we are ready create recycler adapter.
@@ -74,6 +88,7 @@ public class viewAppointmentAll extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull AllAppointmentViewHolder holder, int position, @NonNull Appointment model) {
                 if(GlobalVar.user_type == "carer") {
                     holder.routeBtn.setVisibility(View.VISIBLE);
+                    holder.completeBtn.setVisibility(View.VISIBLE);
                     if (model.getStatus().equals("Assigned") && model.getCarer_id().equals(GlobalVar.current_user_id)) { //hide those that has already been assigned.
                         // assigned = true;
                         System.out.println("Validate the ID HERE " + model.getCarer_id() + " ACTUAL ID =" + GlobalVar.current_user_id);
@@ -81,7 +96,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                         //notifyDataSetChanged();
                         DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
                         holder.appointmentID = snapshot.getId();
-                        System.out.println("HELLO JIALINGYI " + holder.appointmentID);
+                        System.out.println("HELLO JIALINGYI " + holder.appointmentID + " THIS IS THE POSITION " );
 
                         holder.address = model.getAddress();
                         holder.postcode = model.getPostcode();
@@ -92,6 +107,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                         holder.notes = model.getNotes();
                         holder.status = model.getStatus();
                         holder.carerName = model.getCarer_name();
+                        holder.carerID = model.getCarer_id();
 
                         holder.addressTV.setText(holder.address + ", " + holder.postcode);
                         holder.dateTV.setText(holder.date);
@@ -148,6 +164,9 @@ public class viewAppointmentAll extends AppCompatActivity {
                         holder.namePatient.setText(holder.name);
                         holder.notesTV.setText(holder.notes);
                         holder.statusTV.setText(holder.status);
+                        if(holder.status != "Assigned"){
+
+                        }
                         holder.nameCarerTV.setText(holder.carerName);
 
                         holder.position = holder.getAbsoluteAdapterPosition();
@@ -179,7 +198,7 @@ public class viewAppointmentAll extends AppCompatActivity {
     private class AllAppointmentViewHolder extends RecyclerView.ViewHolder{
 
         TextView addressTV, dateTV, timeTV, durationTV, nameCarerTV, notesTV, namePatient, statusTV;
-        Button assignMeBtn,routeBtn;
+        Button rescheduleBtn,routeBtn, completeBtn;
 
         int position;
         String address, date, duration, name, notes, postcode,status,time,userid,carerName,carerID;
@@ -193,16 +212,17 @@ public class viewAppointmentAll extends AppCompatActivity {
             //}
             // else
             //    itemView.findViewById(R.id.appointmentRecyclerCardView).setVisibility(View.VISIBLE);
-
             addressTV = itemView.findViewById(R.id.viewAddressPostcode);
             dateTV = itemView.findViewById(R.id.viewAppointDate);
             timeTV = itemView.findViewById(R.id.appointManageViewDate);
-            durationTV = itemView.findViewById(R.id.durationArea);
+            durationTV = itemView.findViewById(R.id.durationAreaPatientUi);
             nameCarerTV = itemView.findViewById(R.id.carerAssignedField);
             notesTV = itemView.findViewById(R.id.notesField);
-            namePatient = itemView.findViewById(R.id.PatientNameField);
-            statusTV = itemView.findViewById(R.id.statusText);
+            namePatient = itemView.findViewById(R.id.PatientNameFieldpatientui);
+            statusTV = itemView.findViewById(R.id.statusTextpatientui);
             routeBtn = itemView.findViewById(R.id.routeBtn);
+            completeBtn = itemView.findViewById(R.id.completeAppBtn);
+            rescheduleBtn = itemView.findViewById(R.id.rescheduleAppBtn);
 
                 routeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -219,86 +239,97 @@ public class viewAppointmentAll extends AppCompatActivity {
                     }
                 });
 
+                completeBtn.setOnClickListener(new View.OnClickListener() {
+                    Date getDate = new Date();
+                    DateFormat dateFormatting = new SimpleDateFormat("HH:mm:ss");
+                    String currentTime = dateFormatting.format(getDate);
 
-//            itemView.findViewById(R.id.acceptPatientAppointmentBtn).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    System.out.println(appointmentID);
-//
-//                    //DocumentReference docRef = fireStore.collection("appointmentRequest").document(appointmentID);
-//
-//
-//                    Map<String, Object> appointmentRequestUpdate = new HashMap<>();
-//                    appointmentRequestUpdate.put("carer_id", GlobalVar.current_user_id); //carer id.
-//                    appointmentRequestUpdate.put("carer_name", GlobalVar.current_user); //carer name
-//                    appointmentRequestUpdate.put("status", "Assigned");
-//                    fireStore.collection("appointmentRequest").document(appointmentID)
-//                            .update(appointmentRequestUpdate);
-//
-//                    appointmentRequestUpdate.put("user_id",nameTV);
-//                    appointmentRequestUpdate.put("name",nameTV);
-//                    appointmentRequestUpdate.put("address",addressSubmit);
-//                    appointmentRequestUpdate.put("postcode",postcodeSubmit);
-//                    appointmentRequestUpdate.put("date",dateSubmit);
-//                    appointmentRequestUpdate.put("time",timeStoredSubmit);
-//                    appointmentRequestUpdate.put("duration",careDurationSubmit);
-//                    appointmentRequestUpdate.put("notes",notesSubmit);
-//                    appointmentRequestUpdate.put("status","pending");
-//                    appointmentRequestUpdate.put("carer_id",GlobalVar.current_user_id);
-//                    appointmentRequestUpdate.put("carer_name",GlobalVar.current_user);
-//                    appointmentRequestUpdate.put("status","Assigned");
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(viewAppointmentAll.this);
+                        builder.setTitle("Finish visit trip")
+                                .setMessage("Leave a notes and Complete Trip");
+                        final EditText carerInput = new EditText(viewAppointmentAll.this);
+                        builder.setView(carerInput);
 
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
 
-//                    docRef.set(appointmentRequestUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            System.out.println(docRef);
-//                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
-//                            Toast.makeText(viewAppointmentAll.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
-//                            try{
-//                                Toast.makeText(viewAppointmentAll.this, "This appointment " + appointmentID + " has been assigned to you.", Toast.LENGTH_SHORT).show();
-//                                Thread.sleep(2000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            //startActivity(new Intent(viewAppointmentAll.this, MainUIPatientActivity.class));
-//
-//                        }
-//                    });
-//                            collRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        //queryUserType();
-//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//                        document.get
-//
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
+                                builder.setPositiveButton("Submit and Complete.", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        System.out.println(address+date+duration+name+notes+postcode+status+time+userid+carerName+carerID);
+                                        DocumentReference docRefLog = fireStore.collection("appointmentLog").document(appointmentID);
+                                        Map<String, Object> appointmentLog = new HashMap<>();
+                                        appointmentLog.put("user_id",userid); //user = patient.
+                                        appointmentLog.put("name",name);
+                                        appointmentLog.put("carer_name",carerName);
+                                        appointmentLog.put("carer_id",carerID);
+                                        appointmentLog.put("address",address);
+                                        appointmentLog.put("postcode",postcode);
+                                        appointmentLog.put("date",date);
+                                        appointmentLog.put("time",time);
+                                        appointmentLog.put("end_time", currentTime);
+                                        appointmentLog.put("duration",duration);
+                                        appointmentLog.put("notes",notes);
+                                        appointmentLog.put("status","Completed!");
+                                        appointmentLog.put("carerNotes",carerInput.getText().toString());
+                                        docRefLog.set(appointmentLog).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                System.out.println(docRefLog);
+                                                Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
+                                                Toast.makeText(viewAppointmentAll.this, "Trip + " + appointmentID + " has been completed!", Toast.LENGTH_SHORT).show();
+                                                try{
 
-//                    Query query = collRef.whereEqualTo("appointmentRequest",appointmentID);
-//                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            if(task.isSuccessful()) {
-//
-//                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                    String Test = document.getId();
-//                                    System.out.println("THIS IS IT NELSON! " + Test);
-//                                }
-//                            }
-//                        }
-//                    });
-              //  }
-           // });
+                                                    Thread.sleep(1000);
+                                                } catch (InterruptedException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                //startActivity(new Intent(viewAppointmentAll.this, MainUIPatientActivity.class));
+
+                                            }
+                                        });
+
+                                        //after copied to log database, delete it from appointmentView
+                                        fireStore.collection("appointmentRequest").document(appointmentID)
+                                                .delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error deleting document", e);
+                                                    }
+                                                });
+                                        finish();
+                                        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        //startActivity(intent);
+                                        //finish();
+                                    }
+                                })
+                                .setCancelable(false);
+                        AlertDialog dialog = builder.create();
+                        dialog.setOnShowListener(dialog1 -> {
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                                    .setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                                    .setTextColor(getResources().getColor(android.R.color.holo_blue_light));
+                        });
+
+                        dialog.show();
+                        ////////////////////////////
+                    }
+                });
+
         }
     }
     @Override

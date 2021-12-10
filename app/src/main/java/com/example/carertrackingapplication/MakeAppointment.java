@@ -71,7 +71,7 @@ public class MakeAppointment extends AppCompatActivity {
                     String addressSubmit = address.getText().toString().trim();
                     String postcodeSubmit = postcode.getText().toString().trim();
                     String dateSubmit = etDate.getText().toString().trim();
-                    String timeStoredSubmit = etTime.getText().toString().trim();
+                    String timeStoredSubmit = etTime.getText().toString().trim().replaceAll(" ", ""); //in order to remove space between AM PM. Else quicksort wont work accurately
                     String careDurationSubmit = careDuration.getText().toString().trim();
                     String notesSubmit = toCarerNotes.getText().toString().trim();
 
@@ -184,14 +184,14 @@ public class MakeAppointment extends AppCompatActivity {
                                             "hh:mm aa"
                                     );
                                     //Set selected time on editView
-                                    etTime.setText(f12Hours.format(date));
-                                    timeStored = f12Hours.format(date);
+                                    etTime.setText(f24Hours.format(date));
+                                    timeStored = f24Hours.format(date);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
 
                             }
-                        },12,0,false
+                        },24,0,true
                         );
                 //set transparent background here
                 timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

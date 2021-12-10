@@ -91,13 +91,6 @@
             android:text="Make Appointment" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:backgroundTint="#D34848"
-            android:text="Rearrange Appointment" />
-
-        <Button
             android:id="@+id/viewAppointmentBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,19 +111,23 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="33dp"
+        android:layout_width="408dp"
+        android:layout_height="51dp"
         android:layout_marginTop="25dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/txt_ratingScore2"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_ratingScore2">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="350dp"
+            android:background="@null"
             android:paddingLeft="15dp"
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+
     </LinearLayout>
 
 
