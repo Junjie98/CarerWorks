@@ -137,7 +137,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/statusTextpatientui"
+                        android:id="@+id/statusTextHistory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/statusLabelpatientui"
@@ -190,7 +190,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/durationAreaPatientUi"
+                        android:id="@+id/endTimeFieldHistory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/timeLabelpatientui"
@@ -264,7 +264,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/PatientNameFieldpatientui"
+                        android:id="@+id/PatientNameFieldHistory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/addressPostcodeLabelpatientui"
@@ -372,14 +372,14 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="104dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="41dp"
                 android:layout_alignTop="@id/appointmentBtn"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="-25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="-24dp"
                 android:text="Manage Appointment and Track"
-                android:textSize="10dp" />
+                android:textSize="14dp" />
 
             <ImageButton
                 android:id="@+id/historyLogBtn"

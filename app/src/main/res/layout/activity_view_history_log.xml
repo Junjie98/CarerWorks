@@ -4,47 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewRequestAppointment">
+    tools:context=".ViewHistoryLog">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="3dp"
+        tools:layout_editor_absoluteY="-2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/backBtnViewAppointment"
-                android:layout_width="41dp"
-                android:layout_height="48dp"
+                android:id="@+id/historyBackBtn"
+                android:layout_width="34dp"
+                android:layout_height="47dp"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/historyLogViewLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Appointment Request"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="History Log"
+                android:layout_marginLeft="10dp"
+                android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/historyLogExplaination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Carers, please select the appointment based on your availablity and distance." />
+                android:layout_marginLeft="10dp"
+                android:text="This page contains all the trip that has been completed as well as the carer notes for that particular appointment."
+                android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/viewReqAppointmentRecyclerView"
+                android:id="@+id/viewHistoryLogRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
         </LinearLayout>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

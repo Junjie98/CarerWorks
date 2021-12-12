@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.carertrackingapplication.appinfo.CarerInfo;
+import com.example.carertrackingapplication.services.firebaseMessagingService;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +42,7 @@ import java.util.Date;
 public class MainUICarerActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
-    private ImageButton manageAppointment, mapTracker;
+    private ImageButton manageAppointment, historyLogBtn,settingCarer;
     Button trackPatientAddressBtn,callPatientBtn;
     TextView txt_username, txt_ratingScore, logout,dateField, statusField,timeField,durationField,carerField,addressField,patientField,notesField,upcomingAppointmentCarer;
     private FirebaseFirestore fireStore;
@@ -66,12 +69,20 @@ public class MainUICarerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_uicarer);
         MainUISetup();
-
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
         setupUserInformation();
         setupUpcomingAppointmentUI();
-        System.out.println(smallestDateAppointmentID);
+
+
+        //run intent at background for sending notification when on the way
+        Intent intentBackgroundService = new Intent(this, firebaseMessagingService.class);
+        startService(intentBackgroundService);
+
+        //setup load of the data at start.
+        SharedPreferences sharedPreferences = getSharedPreferences(settingActivity.SHARED_PREFERENCES, MODE_PRIVATE);
+        settingActivity.switchOnOff = sharedPreferences.getBoolean(settingActivity.SWITCH1, false);
+        System.out.println(settingActivity.switchOnOff);
 
         if(hasUpcoming){
             upcomingAppointmentCarer.setVisibility(View.VISIBLE);
@@ -84,12 +95,26 @@ public class MainUICarerActivity extends AppCompatActivity {
             cardViewCarerHome.setVisibility(View.VISIBLE);
         }
 
-        mapTracker.setOnClickListener(new View.OnClickListener() {
+        historyLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUICarerActivity.this,CarerMapTrackerActivity.class));
+                startActivity(new Intent(MainUICarerActivity.this,ViewHistoryLog.class));
             }
         });
+        settingCarer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainUICarerActivity.this,settingActivity.class));
+            }
+        });
+        //removed
+//        mapTracker.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(MainUICarerActivity.this,CarerMapTrackerActivity.class));
+//            }
+//        });
+
 
 
         manageAppointment.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +180,6 @@ public class MainUICarerActivity extends AppCompatActivity {
 
     protected void MainUISetup(){
         manageAppointment = (ImageButton)findViewById(R.id.appointmentBtn);
-        mapTracker = (ImageButton)findViewById(R.id.mapTrackerBtn);
         txt_username = (TextView) findViewById(R.id.txt_username);
         txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScoreCarer);
         logout = (TextView) findViewById(R.id.logoutBtn);
@@ -172,6 +196,9 @@ public class MainUICarerActivity extends AppCompatActivity {
         callPatientBtn = findViewById(R.id.callHomePageCarerBtn);
         cardViewCarerHome = findViewById(R.id.cardViewPatientMain);
         upcomingAppointmentCarer = findViewById(R.id.upcommingAppointmentLabel);
+        settingCarer = findViewById(R.id.settingBtnCarer);
+        historyLogBtn = findViewById(R.id.historyLogBtn);
+
     }
 
     private void fillCardView(){
@@ -287,10 +314,6 @@ public class MainUICarerActivity extends AppCompatActivity {
                         Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
 
                         GlobalVar.current_user = document.get("name").toString();
-                        String email = document.get("email").toString();
-                        String gender = document.get("gender").toString();
-                        String dob = document.get("dob").toString();
-                        String phone = document.get("phone").toString();
                         txt_username.setText(GlobalVar.current_user);
                         txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
 
@@ -303,25 +326,5 @@ public class MainUICarerActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
-
-    private void queryUserType(int num){
-        CollectionReference carerRef = fireStore.collection("users");
-        Query query = carerRef.whereEqualTo("user_type", num);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document:task.getResult()){
-                        System.out.println(document.get("name"));
-                    }
-                }else{
-                    System.out.println("Query Failed. Something is wrong.");
-                }
-            }
-        });
-    }
-
 }

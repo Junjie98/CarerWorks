@@ -386,14 +386,14 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="104dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="41dp"
                 android:layout_alignTop="@id/appointmentBtn"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="-25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="-24dp"
                 android:text="Manage Appointment and Track"
-                android:textSize="10dp" />
+                android:textSize="14dp" />
 
             <ImageButton
                 android:id="@+id/settingBtn"
@@ -428,7 +428,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/settingBtn"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="-25dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginRight="80dp"
                 android:text="Settings" />
 

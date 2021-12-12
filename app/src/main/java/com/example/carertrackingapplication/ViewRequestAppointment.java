@@ -144,7 +144,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
             //    itemView.findViewById(R.id.appointmentRecyclerCardView).setVisibility(View.VISIBLE);
 
             addressTV = itemView.findViewById(R.id.appointManageViewAddress);
-            dateTV = itemView.findViewById(R.id.appointManageViewDate);
+            dateTV = itemView.findViewById(R.id.HistoryViewTimeField);
             timeTV = itemView.findViewById(R.id.appointManageViewTime);
             durationTV = itemView.findViewById(R.id.appointManageViewDuration);
             nameTV = itemView.findViewById(R.id.appointManageViewName);
@@ -166,69 +166,6 @@ public class ViewRequestAppointment extends AppCompatActivity {
                     appointmentRequestUpdate.put("status", "Assigned");
                     fireStore.collection("appointmentRequest").document(appointmentID)
                             .update(appointmentRequestUpdate);
-//
-//                    appointmentRequestUpdate.put("user_id",nameTV);
-//                    appointmentRequestUpdate.put("name",nameTV);
-//                    appointmentRequestUpdate.put("address",addressSubmit);
-//                    appointmentRequestUpdate.put("postcode",postcodeSubmit);
-//                    appointmentRequestUpdate.put("date",dateSubmit);
-//                    appointmentRequestUpdate.put("time",timeStoredSubmit);
-//                    appointmentRequestUpdate.put("duration",careDurationSubmit);
-//                    appointmentRequestUpdate.put("notes",notesSubmit);
-//                    appointmentRequestUpdate.put("status","pending");
-//                    appointmentRequestUpdate.put("carer_id",GlobalVar.current_user_id);
-//                    appointmentRequestUpdate.put("carer_name",GlobalVar.current_user);
-//                    appointmentRequestUpdate.put("status","Assigned");
-
-
-//                    docRef.set(appointmentRequestUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            System.out.println(docRef);
-//                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
-//                            Toast.makeText(ViewRequestAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
-//                            try{
-//                                Toast.makeText(ViewRequestAppointment.this, "This appointment " + appointmentID + " has been assigned to you.", Toast.LENGTH_SHORT).show();
-//                                Thread.sleep(2000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            //startActivity(new Intent(ViewRequestAppointment.this, MainUIPatientActivity.class));
-//
-//                        }
-//                    });
-//                            collRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        //queryUserType();
-//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//                        document.get
-//
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
-
-//                    Query query = collRef.whereEqualTo("appointmentRequest",appointmentID);
-//                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            if(task.isSuccessful()) {
-//
-//                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                    String Test = document.getId();
-//                                    System.out.println("THIS IS IT NELSON! " + Test);
-//                                }
-//                            }
-//                        }
-//                    });
                 }
             });
         }

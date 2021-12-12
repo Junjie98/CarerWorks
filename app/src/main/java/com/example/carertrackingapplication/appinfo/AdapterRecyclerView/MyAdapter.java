@@ -58,7 +58,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             super(itemView);
 
             addressTV = itemView.findViewById(R.id.appointManageViewAddress);
-            dateTV = itemView.findViewById(R.id.appointManageViewDate);
+            dateTV = itemView.findViewById(R.id.HistoryViewTimeField);
             timeTV = itemView.findViewById(R.id.appointManageViewTime);
             durationTV = itemView.findViewById(R.id.appointManageViewDuration);
             nameTV = itemView.findViewById(R.id.appointManageViewName);

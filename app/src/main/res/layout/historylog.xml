@@ -6,9 +6,9 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/appointmentViewRecyclerCardView"
+        android:id="@+id/historyLogViewCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="269dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -31,7 +31,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/datelabel"
+                    android:id="@+id/historydatelabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -41,10 +41,10 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/viewAppointDate"
+                    android:id="@+id/viewHistoryDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/datelabel"
+                    android:layout_below="@id/historydatelabel"
                     android:layout_marginBottom="10dp"
                     android:text="5/12/2021"
                     android:textColor="@color/black"
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Time: "
+                    android:text="Start Time: "
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -100,13 +100,13 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/durationLabel"
+                    android:id="@+id/timeEndLabelHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="false"
                     android:layout_marginLeft="35dp"
                     android:layout_toRightOf="@+id/timeLabelHistory"
-                    android:text="Duration(hr): "
+                    android:text="endTime: "
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -117,7 +117,7 @@
                     android:layout_below="@id/timeLabelHistory"
                     android:layout_marginBottom="10dp"
                     android:layout_toRightOf="@id/HistoryViewTimeField"
-                    android:paddingLeft="20dp"
+                    android:paddingLeft="60dp"
                     android:text="11:00am"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -152,26 +152,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/addressPostcodeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:text="Address and Postcode: "
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/viewAddressPostcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/addressPostcodeLabel"
-                    android:layout_marginBottom="10dp"
-                    android:text="This address"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
                     android:id="@+id/patientNameLabelHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -185,7 +165,7 @@
                     android:id="@+id/PatientNameFieldHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/addressPostcodeLabel"
+                    android:layout_below="@id/patientNameLabelHistory"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="10dp"
                     android:text="Jerry"
@@ -204,12 +184,12 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/notesLabel"
+                    android:id="@+id/carerNotesLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:text="Notes"
+                    android:text="Carer Notes"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -217,7 +197,7 @@
                     android:id="@+id/notesFieldHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/notesLabel"
+                    android:layout_below="@id/carerNotesLabel"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -239,22 +219,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="Reschedule"
+                    android:text="Call"
                     android:textColor="@color/black"
                     android:textSize="15sp"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/routeBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_toRightOf="@id/contactBtn"
-                    android:backgroundTint="#FFFFFF"
-                    android:text="Route"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/ratingBtn"
@@ -263,7 +231,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="Complete"
+                    android:text="Rate Carer"
                     android:textColor="#FF0000"
                     android:textSize="15sp"
                     android:visibility="gone" />
@@ -274,4 +242,5 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
 </LinearLayout>

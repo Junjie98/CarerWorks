@@ -12,20 +12,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.carertrackingapplication.appinfo.CarerInfo;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,18 +29,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class MainUIPatientActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
-    private ImageButton manageAppointment, mapTracker;
+    private ImageButton manageAppointment, mapTracker, settingPatient,historyLogBtn;
     TextView txt_username, txt_ratingScore, logout, upcomingAppointmentPatient,dateField,statusField,timeField,durationField,carerField,addressField,patientField,notesField;
     Button trackCarerBtn, callCarerBtn;
     private FirebaseFirestore fireStore;
@@ -75,14 +69,29 @@ public class MainUIPatientActivity extends AppCompatActivity {
         setupUpcomingAppointmentUI();
 
 
-//        GlobalVar.current_user = fireStore.collection("users").document(GlobalVar.current_user_id).get(Source.valueOf("name")).toString();
 
-        mapTracker.setOnClickListener(new View.OnClickListener() {
+        historyLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this,MapsTrackerActivity.class));
+                startActivity(new Intent(MainUIPatientActivity.this, ViewHistoryLog.class));
             }
         });
+
+
+        settingPatient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainUIPatientActivity.this,settingActivity.class));
+            }
+        });
+
+//removed
+//        mapTracker.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(MainUIPatientActivity.this,MapsTrackerActivity.class));
+//            }
+//        });
 
         manageAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,17 +166,19 @@ public class MainUIPatientActivity extends AppCompatActivity {
         txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScore);
         logout = (TextView) findViewById(R.id.logoutBtn);
         dateField = findViewById(R.id.viewAppointDatepatientui);
-        statusField = findViewById(R.id.statusTextpatientui);
+        statusField = findViewById(R.id.statusTextHistory);
         timeField = findViewById(R.id.appointManageViewDatepatientui);
-        durationField = findViewById(R.id.durationAreaPatientUi);
+        durationField = findViewById(R.id.endTimeFieldHistory);
         carerField = findViewById(R.id.carerAssignedFieldpatientui);
         addressField = findViewById(R.id.viewAddressPostcodepatientui);
-        patientField = findViewById(R.id.PatientNameFieldpatientui);
+        patientField = findViewById(R.id.PatientNameFieldHistory);
         notesField = findViewById(R.id.notesFieldpatientui);
         trackCarerBtn = findViewById(R.id.trackHomePageAppointmentBtn);
         callCarerBtn = findViewById(R.id.callHomePageCarerBtn);
         cardViewPatientHome = findViewById(R.id.cardViewPatientMain);
         upcomingAppointmentPatient = findViewById(R.id.upcommingAppointmentLabel);
+        settingPatient = findViewById(R.id.settingBtn);
+        historyLogBtn = findViewById(R.id.historyLogBtn);
 
 
     }

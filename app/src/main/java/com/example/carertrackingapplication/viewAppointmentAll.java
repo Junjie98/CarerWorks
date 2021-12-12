@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,7 +33,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -150,7 +148,6 @@ public class viewAppointmentAll extends AppCompatActivity {
                 }
 
                 if(GlobalVar.user_type == "patient") {
-                    holder.routeBtn.setVisibility(View.VISIBLE);
                     if (model.getUser_ID().equals(GlobalVar.current_user_id)) { //hide those that has already been assigned.
                         // assigned = true;
                         holder.cardView.setVisibility(View.VISIBLE);
@@ -182,6 +179,8 @@ public class viewAppointmentAll extends AppCompatActivity {
                         //allow changes to date and time if not assigned
                         if(!holder.status.equals("Assigned")){
                             holder.rescheduleBtn.setVisibility(View.VISIBLE);
+                        }else if(holder.status.equals("Assigned")){
+                            holder.routeBtn.setVisibility(View.VISIBLE);
                         }
                         holder.nameCarerTV.setText(holder.carerName);
 
@@ -230,15 +229,15 @@ public class viewAppointmentAll extends AppCompatActivity {
             //    itemView.findViewById(R.id.appointmentRecyclerCardView).setVisibility(View.VISIBLE);
             addressTV = itemView.findViewById(R.id.viewAddressPostcode);
             dateTV = itemView.findViewById(R.id.viewAppointDate);
-            timeTV = itemView.findViewById(R.id.appointManageViewDate);
-            durationTV = itemView.findViewById(R.id.durationAreaPatientUi);
-            nameCarerTV = itemView.findViewById(R.id.carerAssignedField);
-            notesTV = itemView.findViewById(R.id.notesField);
-            namePatient = itemView.findViewById(R.id.PatientNameFieldpatientui);
-            statusTV = itemView.findViewById(R.id.statusTextpatientui);
+            timeTV = itemView.findViewById(R.id.HistoryViewTimeField);
+            durationTV = itemView.findViewById(R.id.endTimeFieldHistory);
+            nameCarerTV = itemView.findViewById(R.id.carerAssignedFieldHistory);
+            notesTV = itemView.findViewById(R.id.notesFieldHistory);
+            namePatient = itemView.findViewById(R.id.PatientNameFieldHistory);
+            statusTV = itemView.findViewById(R.id.statusTextHistory);
             routeBtn = itemView.findViewById(R.id.routeBtn);
-            completeBtn = itemView.findViewById(R.id.completeAppBtn);
-            rescheduleBtn = itemView.findViewById(R.id.rescheduleAppBtn);
+            completeBtn = itemView.findViewById(R.id.ratingBtn);
+            rescheduleBtn = itemView.findViewById(R.id.contactBtn);
 
 
                 rescheduleBtn.setOnClickListener(new View.OnClickListener() {

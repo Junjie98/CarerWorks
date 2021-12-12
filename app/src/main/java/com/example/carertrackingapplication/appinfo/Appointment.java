@@ -1,6 +1,6 @@
 package com.example.carertrackingapplication.appinfo;
 
-import java.util.ArrayList;
+
 
 public class Appointment {
 

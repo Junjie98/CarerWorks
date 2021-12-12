@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.carertrackingapplication.variable.GlobalVar;
 
@@ -14,6 +15,7 @@ public class ManageAppointmentActivity extends AppCompatActivity {
 
     private Button makeAppointmentBtn,viewAppointmentBtn, carerManageAppointmentReq;
     private ImageButton backBtn;
+    private TextView txt_ratingScore2,txt_username2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,16 @@ public class ManageAppointmentActivity extends AppCompatActivity {
         makeAppointmentBtn = findViewById(R.id.makeAppointmentBtn);
         viewAppointmentBtn = findViewById(R.id.viewAppointmentBtn);
         carerManageAppointmentReq = findViewById(R.id.ManageAppointmentRequest);
+        txt_ratingScore2 = findViewById(R.id.txt_ratingScore2);
+        txt_username2 = findViewById(R.id.txt_username2);
+
         backBtn = findViewById(R.id.backBtn);
+        if(GlobalVar.user_type == "carer") {
+            txt_username2.setText(GlobalVar.current_user);
+            txt_ratingScore2.setText("Rating: " + GlobalVar.user_rating);
+        }else{
+            txt_username2.setText(GlobalVar.current_user);
+
+        }
     }
 }

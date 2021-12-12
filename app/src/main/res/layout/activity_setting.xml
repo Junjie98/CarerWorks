@@ -14,12 +14,40 @@
         tools:layout_editor_absoluteY="16dp">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imageBackBtn"
             android:layout_width="59dp"
             android:layout_height="53dp"
             android:layout_marginTop="20dp"
-            android:backgroundTint="@null"
+            android:background="@null"
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+
+        <TextView
+            android:id="@+id/settingActivityLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="28sp" />
+
+        <Button
+            android:id="@+id/updateContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="Change Contact Number" />
+
+        <TextView
+            android:id="@+id/travelModeLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="Travelling mode. Turned Off = 'walking'. This will affect your routing map towards patient's home" />
+
+        <Switch
+            android:id="@+id/travelModeSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Driving Mode" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

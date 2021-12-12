@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.carertrackingapplication.helperClass.GoogleDirectionAPIFetchURL;
 import com.example.carertrackingapplication.helperClass.CallbackOnTaskDone;
+import com.example.carertrackingapplication.variable.GlobalVar;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 //import com.google.android.gms.common.internal.GoogleApiAvailabilityCache;
@@ -53,8 +54,10 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CarerMapTrackerActivity extends FragmentActivity implements OnMapReadyCallback, CallbackOnTaskDone {// NavigationView.OnNavigationItemSelectedListener {
 
@@ -74,7 +77,7 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
     private static String address, postcode, user_id, name;
     private
     //online geofire live dtb
-    DatabaseReference onlineReference, currentUserReference, driversLocationReference;
+    DatabaseReference onlineReference, currentUserReference, carerLocationReference;
     GeoFire geoFire;
 
     public CarerMapTrackerActivity(String address, String postcode, String user_id, String name){
@@ -195,11 +198,11 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
     }
 
     public void CreateLocationRequest() {
-        onlineReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child(".info/connected");
-        driversLocationReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation");
+        onlineReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child(".information/connected");
+        carerLocationReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("CarerLocation");
         currentUserReference = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference("PatientLocation").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        geoFire = new GeoFire(driversLocationReference);
+        geoFire = new GeoFire(carerLocationReference);
 
         registerOnlineSystem();
 
@@ -219,16 +222,32 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
                 //mLastLocation = locationResult.getLastLocation();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newCurPosition, 18f));
 
-                geoFire.setLocation(FirebaseAuth.getInstance().getUid(), new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()), new GeoFire.CompletionListener() {
+                geoFire.setLocation(FirebaseAuth.getInstance().getUid(),new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()), new GeoFire.CompletionListener() {
                     @Override
                     public void onComplete(String key, DatabaseError error) {
                         if(error != null){
                             Snackbar.make(mapFragment.getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
                         }else{
                             Snackbar.make(mapFragment.getView(), "Success connected to realtime dtb & upload location", Snackbar.LENGTH_LONG).show();
+                            String travelMode = "walking";//set as default. Since switchOnOff is set as off by default as well.
+                            if(settingActivity.switchOnOff) {
+                                travelMode = "driving";
+                            }else{
+                                travelMode = "walking";
+                            }
+                            DatabaseReference carerRef = carerLocationReference.child(GlobalVar.current_user_id);
+                            Map<String,Object> carerMode = new HashMap<>();
+                            carerMode.put("TravelMode",travelMode);
+                            carerRef.updateChildren(carerMode);
                             LatLng userLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                            String url = getUrl(userLatLng,patientLatLng,"walking");
-                            new GoogleDirectionAPIFetchURL(CarerMapTrackerActivity.this).execute(url,"walking");
+//                            String travelMode = "walking"; //set as default. Since switchOnOff is set as off by default as well.
+//                            if(settingActivity.switchOnOff){
+//                                travelMode = "driving";
+//                            }else{
+//                                travelMode = "walking";
+//                            }
+                            String url = getUrl(userLatLng,patientLatLng,travelMode);
+                            new GoogleDirectionAPIFetchURL(CarerMapTrackerActivity.this).execute(url,travelMode);
 //                            if(mLastLocation.distanceTo()){
 //
 //                            }
