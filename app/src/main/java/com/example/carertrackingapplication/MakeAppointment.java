@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ public class MakeAppointment extends AppCompatActivity {
     private String date, timeStored;
     private Button submitBtn;
     private FirebaseFirestore fireStore;
+    private ImageView makeAppBackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,13 @@ public class MakeAppointment extends AppCompatActivity {
         validationField();
         submitData();
 
+        makeAppBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
     }
 
@@ -67,7 +77,7 @@ public class MakeAppointment extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validationField()){
+                if(validationField() && GlobalVar.user_type != "patientFamily"){
                     String addressSubmit = address.getText().toString().trim();
                     String postcodeSubmit = postcode.getText().toString().trim();
                     String dateSubmit = etDate.getText().toString().trim();
@@ -92,14 +102,53 @@ public class MakeAppointment extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             System.out.println(docRef);
                             Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
-                            Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
                             try{
-                                Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully. Awaiting for approval by Administrator", Toast.LENGTH_SHORT).show();
-                                Thread.sleep(2000);
+                                Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
+                                Thread.sleep(500);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                             startActivity(new Intent(MakeAppointment.this, MainUIPatientActivity.class));
+
+                        }
+                    });
+                }
+
+                if(validationField() && GlobalVar.user_type == "patientFamily"){
+                    String addressSubmit = address.getText().toString().trim();
+                    String postcodeSubmit = postcode.getText().toString().trim();
+                    String dateSubmit = etDate.getText().toString().trim();
+                    String timeStoredSubmit = etTime.getText().toString().trim().replaceAll(" ", ""); //in order to remove space between AM PM. Else quicksort wont work accurately
+                    String careDurationSubmit = careDuration.getText().toString().trim();
+                    String notesSubmit = toCarerNotes.getText().toString().trim();
+
+                    geoLocation();
+                    DocumentReference docRef = fireStore.collection("appointmentRequest").document();
+                    Map<String, Object> appointmentRequest = new HashMap<>();
+                    appointmentRequest.put("family_id_appointment",GlobalVar.current_user_id); //family made the appointment
+                    appointmentRequest.put("user_id", GlobalVar.family_id); //setup appointment for family patient
+                    appointmentRequest.put("name",GlobalVar.family_name);//patient name. Not family's name
+                    appointmentRequest.put("address",addressSubmit);
+                    appointmentRequest.put("postcode",postcodeSubmit);
+                    appointmentRequest.put("date",dateSubmit);
+                    appointmentRequest.put("time",timeStoredSubmit);
+                    appointmentRequest.put("duration",careDurationSubmit);
+                    appointmentRequest.put("notes",notesSubmit);
+                    appointmentRequest.put("status","pending");
+                    docRef.set(appointmentRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            System.out.println(docRef);
+                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id + "for " + GlobalVar.family_id);
+                            Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
+                            try{
+                                Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            startActivity(new Intent(MakeAppointment.this, MainUIFamilyActivity.class));
 
                         }
                     });
@@ -155,6 +204,7 @@ public class MakeAppointment extends AppCompatActivity {
         careDuration = findViewById(R.id.durationField);
         toCarerNotes = findViewById(R.id.noteField);
         submitBtn = findViewById(R.id.submitButton);
+        makeAppBackBtn = findViewById(R.id.makeAppBackBtn);
 
     }
 
@@ -224,7 +274,7 @@ public class MakeAppointment extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month = month+1;
-                date = day+"/"+month+"/"+year;
+                date = dayOfMonth+"/"+month+"/"+year;
                 etDate.setText(date);
             }
         };

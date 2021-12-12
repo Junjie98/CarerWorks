@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +88,7 @@ public class ViewHistoryLog extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull HistoryViewHolder holder, int position, @NonNull VisitLog model) {
 
-                if (model.getUser_id().equals(GlobalVar.current_user_id) || model.getCarer_id().equals(GlobalVar.current_user_id)) { //hide those that has already been assigned.
+                if (model.getUser_id().equals(GlobalVar.current_user_id) || model.getCarer_id().equals(GlobalVar.current_user_id) ||model.getUser_id().equals(GlobalVar.family_id) ) {
 
                         holder.cardView.setVisibility(View.VISIBLE);
                         DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
@@ -112,11 +113,12 @@ public class ViewHistoryLog extends AppCompatActivity {
                         holder.nameTV.setText(holder.name);
                         holder.notesTV.setText(holder.carer_notes);
 
-
-                        if(model.getRated().equals(false) && GlobalVar.user_type == "patient"){
+                        if(holder.rated.equals("false") && GlobalVar.user_type == "patient"){
                             holder.rateBtn.setVisibility(View.VISIBLE);
                         }
-
+                        if(holder.rated.equals("false") && GlobalVar.user_type == "patientFamily"){
+                            holder.rateBtn.setVisibility(View.VISIBLE);
+                        }
                         return;
 
 
@@ -165,6 +167,7 @@ public class ViewHistoryLog extends AppCompatActivity {
             callBtn = itemView.findViewById(R.id.contactBtn);
 
             Intent callIntent = new Intent(Intent.ACTION_CALL);
+
             callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

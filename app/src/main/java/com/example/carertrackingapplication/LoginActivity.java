@@ -72,9 +72,32 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    //queryUserType();
                                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                     Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
+                                    if(typeNumber == 3){
+                                        GlobalVar.user_type = "patientFamily";
+                                        GlobalVar.family_id = document.get("patient_family_id").toString();
+                                        DocumentReference docRef2 = fireStore.collection("users").document(GlobalVar.family_id);
+                                        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document.exists()) {
+                                                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                                        Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
+                                                            GlobalVar.family_name = document.get("name").toString();;
+                                                            startActivity(new Intent(LoginActivity.this, MainUIFamilyActivity.class));
+                                                    } else {
+                                                        Log.d(TAG, "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "get failed with ", task.getException());
+                                                }
+                                            }
+                                        });
+                                        startActivity(new Intent(LoginActivity.this, MainUIFamilyActivity.class));
+                                    }
                                     if(typeNumber == 2){
                                         GlobalVar.user_type = "patient";
                                         startActivity(new Intent(LoginActivity.this, MainUIPatientActivity.class));
@@ -98,9 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
-//                    startActivity(new Intent(LoginActivity.this, MainUIPatientActivity.class));
-//                    finish();
-//                    return;
                 }
 //                if(user != null && usertype.getCarerBool() == true ){
 //                    startActivity(new Intent(LoginActivity.this, MainUICarerActivity.class));

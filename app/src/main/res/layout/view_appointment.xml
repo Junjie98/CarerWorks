@@ -15,10 +15,11 @@
 
         app:cardBackgroundColor="#BCBCBC"
         app:cardCornerRadius="12dp"
-        app:cardElevation="30dp">
+        app:cardElevation="30dp"
+        android:visibility="gone">
 
         <RelativeLayout
-            android:layout_width="328dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:orientation="vertical">

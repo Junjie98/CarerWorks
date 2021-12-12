@@ -44,6 +44,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -62,16 +63,12 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     Location mLastLocation;
-    //LocationRequest mLocationRequest;
-
-    //private ActivityMapsTrackerBinding binding;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-   // private FirebaseAuth firebaseAuth;
     Polyline currentPolyline;
-    //online geofire live dtb
+
     MarkerOptions place1,place2;
     DatabaseReference onlineReference, currentUserReference, carerLocationReference;
     GeoFire geoFire;
@@ -79,10 +76,11 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     Address myAddress;
     LatLng myLatLng;
     private static String address, postcode, carer_id, carerName;
-    DatabaseReference dataRef;
+    DatabaseReference dataRef, dataRefCarerTravelMode;
     ArrayList<String> listCarerLocation = new ArrayList<>();
     LatLng carerLatLng;
     Location carerLocation;
+    String travelModeLoaded="walking"; //default
 
     public MapsTrackerActivity(String address, String postcode, String carer_id, String carerName){
         this.address = address;
@@ -129,9 +127,7 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //firebaseAuth = FirebaseAuth.getInstance(); //initiate the auth
 
-        //binding = ActivityMapsTrackerBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_maps_tracker);
         CreateLocationRequest();
         getCarerLocationRequest();
@@ -195,13 +191,34 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
     public void getCarerLocationRequest(){
         database = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app");
         dataRef = database.getReference("CarerLocation").child(carer_id).child("l");
+        database = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app");
+        dataRefCarerTravelMode = database.getReference("CarerLocation").child(carer_id);
+        dataRefCarerTravelMode.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshots : snapshot.getChildren()) {
+//                    travelModeLoaded = snapshots.child("TravelMode").getValue(String.class);
+                    //System.out.println(snapshots.child("TravelMode").getValue(String.class) + "AYEEEEEEEEEEEEEEEEEEEE");
+                    if(snapshots.getValue().equals("driving")){
+                        travelModeLoaded = "driving";
+                    }
+                    if(snapshots.getValue().equals("walking")){
+                        travelModeLoaded = "walking";
+                    }
 
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Reading failed");
+            }
+        });
 
         // Attach a listener to read the data at our posts reference
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                listCarerLocation.clear();
+                listCarerLocation.clear(); //not used
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
@@ -213,9 +230,7 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     carerLatLng = new LatLng(locationLat,locationLng);
-//                    if(place2 != null){
-//                        place2.();
-//                    }
+
 
                     carerLocation = new Location("");
                     carerLocation.setLatitude(carerLatLng.latitude);
@@ -227,8 +242,8 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
                     mMap.clear();
                     mMap.addMarker(place2);
                     mMap.addMarker(place1);
-                    String url = getUrl(carerLatLng,myLatLng,"walking");
-                    new GoogleDirectionAPIFetchURL(MapsTrackerActivity.this).execute(url,"walking");
+                    String url = getUrl(carerLatLng,myLatLng,travelModeLoaded);
+                    new GoogleDirectionAPIFetchURL(MapsTrackerActivity.this).execute(url,travelModeLoaded);
                     //float distance = loc1.distanceTo(loc2);
 //                    place2 = new MarkerOptions().position(new LatLng(carerLocation.getLatitude(),carerLocation.getLongitude()));
 //                    //mMap.addMarker(place2);
@@ -236,7 +251,7 @@ public class MapsTrackerActivity extends FragmentActivity implements OnMapReadyC
 ////                    new GoogleDirectionAPIFetchURL(MapsTrackerActivity.this).execute(url,"walking");
 
                     //listCarerLocation.add(snapshot.getValue().toString());
-                    //System.out.println("VALIDATE = " + snapshot.getValue().toString());
+                    //System.out.println("VALIDATE = " + travelModeLoaded);
                 }
             }
 

@@ -52,6 +52,7 @@ public class MainUICarerActivity extends AppCompatActivity {
     CardView cardViewCarerHome;
     Date smallestDate = new Date();
     boolean hasUpcoming = false;
+    String address, postcode, name; //userid = patientID
 
     @Override
     protected void onResume() {
@@ -116,6 +117,13 @@ public class MainUICarerActivity extends AppCompatActivity {
 //        });
 
 
+        trackPatientAddressBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarerMapTrackerActivity c = new CarerMapTrackerActivity(address, postcode, patientID, name);
+                startActivity(new Intent(MainUICarerActivity.this, CarerMapTrackerActivity.class));
+            }
+        });
 
         manageAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +226,10 @@ public class MainUICarerActivity extends AppCompatActivity {
                         patientField.setText(document.get("name").toString());
                         notesField.setText(document.get("notes").toString());
                         patientID = document.get("user_id").toString();
+
+                        address = document.get("address") + ", " + document.get("postcode");
+                        name = document.get("name").toString();
+
 
                         DocumentReference docRef = fireStore.collection("users").document(patientID);
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

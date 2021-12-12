@@ -6,4 +6,6 @@ public class GlobalVar {
     public static String user_type;
     public static String user_rating;
     public static String travelMode;
+    public static String family_id;
+    public static String family_name;
 }

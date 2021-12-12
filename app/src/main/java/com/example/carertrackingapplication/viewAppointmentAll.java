@@ -98,6 +98,19 @@ public class viewAppointmentAll extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull AllAppointmentViewHolder holder, int position, @NonNull Appointment model) {
+
+                try {
+                    Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
+                    Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(model.getDate() +" "+ model.getTime().replace(" ", ""));
+                    if(d.after(b)) {
+                        holder.cardView.setVisibility(View.GONE);
+                        System.out.println("I've dump one away");
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 if(GlobalVar.user_type == "carer") {
                     holder.routeBtn.setVisibility(View.VISIBLE);
                     holder.completeBtn.setVisibility(View.VISIBLE);
@@ -186,6 +199,62 @@ public class viewAppointmentAll extends AppCompatActivity {
 
                         holder.position = holder.getAbsoluteAdapterPosition();
                         holder.userid = model.getUser_ID();
+
+                        return;
+
+
+                    } else {
+//                    assigned = false;
+                        holder.cardView.setVisibility(View.GONE);
+                        DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
+                        holder.appointmentID = snapshot.getId();
+
+                    }
+                    //System.out.println(model.getUser_ID()+ " LOOOOOOOOOOOOOOOOOOOOOOOOOK");
+
+
+                }
+
+                if(GlobalVar.user_type == "patientFamily") {
+                    if (model.getUser_ID().equals(GlobalVar.family_id)) { //hide those that has already been assigned.
+                        // assigned = true;
+                        holder.cardView.setVisibility(View.VISIBLE);
+                        holder.routeBtn.setText("Track");
+                        //notifyDataSetChanged();
+                        DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
+                        holder.appointmentID = snapshot.getId();
+                        System.out.println("HELLO HERE " + holder.appointmentID);
+
+                        holder.address = model.getAddress();
+                        holder.postcode = model.getPostcode();
+                        holder.date = model.getDate();
+                        holder.time = model.getTime();
+                        holder.duration = model.getDuration();
+                        holder.name = model.getName();
+                        holder.notes = model.getNotes();
+                        holder.status = model.getStatus();
+                        holder.carerName = model.getCarer_name();
+                        holder.carerID = model.getCarer_id();
+
+                        holder.addressTV.setText(holder.address + ", " + holder.postcode);
+                        holder.dateTV.setText(holder.date);
+                        holder.timeTV.setText(holder.time);
+                        holder.durationTV.setText(holder.duration);
+                        holder.namePatient.setText(holder.name);
+                        holder.notesTV.setText(holder.notes);
+                        holder.statusTV.setText(holder.status);
+
+                        //allow changes to date and time if not assigned
+                        if(!holder.status.equals("Assigned")){
+                            holder.rescheduleBtn.setVisibility(View.VISIBLE);
+                        }else if(holder.status.equals("Assigned")){
+                            holder.routeBtn.setVisibility(View.VISIBLE);
+                        }
+                        holder.nameCarerTV.setText(holder.carerName);
+
+                        holder.position = holder.getAbsoluteAdapterPosition();
+                        holder.userid = model.getUser_ID();
+
 
                         return;
 
@@ -356,7 +425,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                                 month = month+1;
-                                date = day+"/"+month+"/"+year;
+                                date = dayOfMonth+"/"+month+"/"+year;
                                 if(!date.equals(null)){ //if user has entered new date, get it and store.
                                 editDate.setText(date);
                                 dateStoredReschedule = editDate.getText().toString().trim();
@@ -422,7 +491,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                             CarerMapTrackerActivity c = new CarerMapTrackerActivity(address, postcode, userid, name);
                             startActivity(new Intent(viewAppointmentAll.this, CarerMapTrackerActivity.class));
                         }
-                        if(GlobalVar.user_type == "patient"){
+                        if(GlobalVar.user_type == "patient" || GlobalVar.user_type == "patientFamily"){
                             MapsTrackerActivity m = new MapsTrackerActivity(address,postcode,carerID,carerName);
                             startActivity(new Intent(viewAppointmentAll.this, MapsTrackerActivity.class));
                         }
@@ -468,6 +537,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                                         appointmentLog.put("duration",duration);
                                         appointmentLog.put("notes",notes);
                                         appointmentLog.put("status","Completed!");
+                                        appointmentLog.put("rated","false");
                                         appointmentLog.put("carerNotes",carerInput.getText().toString());
                                         docRefLog.set(appointmentLog).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

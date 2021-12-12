@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -19,8 +20,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +36,9 @@ public class RegisterActivity extends AppCompatActivity {
     public static final String TAG = "TAG";
     private TextView loginLabel;
     private Button registerBtn;
-    private EditText emailTxtField, fullNameTxtField, passwordTxtField, dobTxtField, genderTxtField, phoneTxtField;
+    private EditText emailTxtField,patientFamilyField ,fullNameTxtField, passwordTxtField, dobTxtField, genderTxtField, phoneTxtField;
     private FirebaseAuth firebaseAuth;
-
+    boolean existInDatabase;
     //for database firestore
     private FirebaseFirestore fireStore;
 //    private boolean carer = false;
@@ -51,6 +57,12 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userregistration);
         registerUIView();
+        UserTypeActivity a = new UserTypeActivity();
+        if(GlobalVar.user_type == "patientFamily"){
+            patientFamilyField.setVisibility(View.VISIBLE);
+        }else{
+            patientFamilyField.setVisibility(View.GONE);
+        }
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
         //The onCreate() method of Application class implementation is the entry point of your Android application where you get control over the logic part.
@@ -74,6 +86,8 @@ public class RegisterActivity extends AppCompatActivity {
                     String userDob = dobTxtField.getText().toString().trim();
                     String userGender = genderTxtField.getText().toString().trim();
                     String userPhone = phoneTxtField.getText().toString().trim();
+                    String famPatientID = patientFamilyField.getText().toString().trim();
+
                     int admintype = 0;
                     int carertype = 1;
                     int patienttype = 2;
@@ -87,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }else{
                                 Toast.makeText(RegisterActivity.this, "Registration Successfully.", Toast.LENGTH_SHORT).show();
                                 String user_id = firebaseAuth.getCurrentUser().getUid();
-                                UserTypeActivity a = new UserTypeActivity();
+
 
                                 //update the server as it differs from my json file during creation.
                                 DocumentReference docRef = fireStore.collection("users").document(user_id);
@@ -156,6 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     user.put("gender",userGender);
                                     user.put("phone",userPhone);
                                     user.put("user_type", patientFamilyType);
+                                    user.put("patient_family_id", famPatientID);
                                     docRef.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
@@ -191,6 +206,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordTxtField = (EditText)findViewById(R.id.registerPasswordText);
         //confirmPasswordTxtField= (EditText)findViewById(R.id.registerPasswordConfirmationText);
         registerBtn = (Button)findViewById(R.id.registerButton);
+        patientFamilyField = findViewById(R.id.familyPatientID);
     }
 
     private boolean validateRegisterField() {
@@ -201,11 +217,47 @@ public class RegisterActivity extends AppCompatActivity {
         String dobRegister = dobTxtField.getText().toString();
         String genderRegister = genderTxtField.getText().toString();
         String phoneNumber = phoneTxtField.getText().toString();
+        String checkPatientFamilyField = patientFamilyField.getText().toString();
+
+
+//        DocumentReference docRef = fireStore.collection("users").document(checkPatientFamilyField);
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        existInDatabase = true;
+//
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                        existInDatabase = false;
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                    existInDatabase = false;
+//                }
+//            }
+//        });
 
         if (emailRegister.isEmpty() || fullNameRegister.isEmpty() || passwordRegister.isEmpty() || dobRegister.isEmpty() || genderRegister.isEmpty() || phoneNumber.isEmpty()) {
             Toast.makeText(this, "Please fill up all the fields before retying.",
                     Toast.LENGTH_SHORT).show(); //error message. toast lenth short = time to be displayed
             validateResult = false;
+
+        }
+        if(GlobalVar.user_type == "patientFamily"){
+
+            if(checkPatientFamilyField.isEmpty()){
+                Toast.makeText(this, "Please fill up patientIDField.",
+                        Toast.LENGTH_SHORT).show();
+                validateResult = false;
+            }else{
+                validateResult = true;
+            }
+//            if(existInDatabase){
+//                validateResult = true;
+//            }
 
         }
 

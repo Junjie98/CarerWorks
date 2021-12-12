@@ -22,11 +22,10 @@ import com.example.carertrackingapplication.variable.GlobalVar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -35,8 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainUIPatientActivity extends AppCompatActivity {
-
+public class MainUIFamilyActivity extends AppCompatActivity {
     public static final String TAG = "TAG";
     private ImageButton manageAppointment, mapTracker, settingPatient,historyLogBtn;
     TextView txt_username, txt_ratingScore,patientUserID,logout, upcomingAppointmentPatient,dateField,statusField,timeField,durationField,carerField,addressField,patientField,notesField;
@@ -47,8 +45,6 @@ public class MainUIPatientActivity extends AppCompatActivity {
     static String smallestDateAppointmentID;
     String carerID, carerPhoneNum, trackAddress, trackPostcode, carerName;
     CardView cardViewPatientHome;
-
-
 
     @Override
     protected void onDestroy() {
@@ -63,11 +59,12 @@ public class MainUIPatientActivity extends AppCompatActivity {
         System.out.println("IM BACK ALIVE");
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_ui_patient);
+        setContentView(R.layout.activity_main_uifamily);
+
         MainUISetup();
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -76,13 +73,10 @@ public class MainUIPatientActivity extends AppCompatActivity {
 
         setupUserInformation();
         setupUpcomingAppointmentUI();
-
-
-
         historyLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this, ViewHistoryLog.class));
+                startActivity(new Intent(MainUIFamilyActivity.this, ViewHistoryLog.class));
             }
         });
 
@@ -90,7 +84,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
         settingPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this,settingActivity.class));
+                startActivity(new Intent(MainUIFamilyActivity.this,settingActivity.class));
             }
         });
 
@@ -98,7 +92,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
         manageAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainUIPatientActivity.this, ManageAppointmentActivity.class));
+                startActivity(new Intent(MainUIFamilyActivity.this, ManageAppointmentActivity.class));
             }
         });
 
@@ -108,7 +102,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + carerPhoneNum));
 
-                if (ActivityCompat.checkSelfPermission(MainUIPatientActivity.this,
+                if (ActivityCompat.checkSelfPermission(MainUIFamilyActivity.this,
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     System.out.println("NOPE");
                     return;
@@ -121,7 +115,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MapsTrackerActivity m = new MapsTrackerActivity(trackAddress,trackPostcode,carerID,carerName);
-                startActivity(new Intent(MainUIPatientActivity.this, MapsTrackerActivity.class));
+                startActivity(new Intent(MainUIFamilyActivity.this, MapsTrackerActivity.class));
 
             }
         });
@@ -129,7 +123,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainUIPatientActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainUIFamilyActivity.this);
                 builder.setTitle("Sign Out")
                         .setMessage("Do you want to sign out?")
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -142,7 +136,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(MainUIPatientActivity.this, LoginActivity.class);
+                                Intent intent = new Intent(MainUIFamilyActivity.this, LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
@@ -161,28 +155,27 @@ public class MainUIPatientActivity extends AppCompatActivity {
             }
         });
     }
-
     protected void MainUISetup(){
         manageAppointment = (ImageButton)findViewById(R.id.appointmentBtn);
         mapTracker = (ImageButton)findViewById(R.id.mapTrackerBtn);
-        txt_username = (TextView) findViewById(R.id.txt_username);
+        txt_username = (TextView) findViewById(R.id.txt_Family_username);
         txt_ratingScore = (TextView) findViewById(R.id.txt_ratingScore);
-        logout = (TextView) findViewById(R.id.logoutBtn);
-        dateField = findViewById(R.id.viewAppointDatepatientui);
-        statusField = findViewById(R.id.statusTextHistory);
-        timeField = findViewById(R.id.appointManageViewDatepatientui);
-        durationField = findViewById(R.id.endTimeFieldHistory);
-        carerField = findViewById(R.id.carerAssignedFieldpatientui);
-        addressField = findViewById(R.id.viewAddressPostcodepatientui);
-        patientField = findViewById(R.id.PatientNameFieldHistory);
-        notesField = findViewById(R.id.notesFieldpatientui);
+        logout = (TextView) findViewById(R.id.logoutFamilyBtn);
+        dateField = findViewById(R.id.viewAppointDatefamilyui);
+        statusField = findViewById(R.id.familystatusTextHistory);
+        timeField = findViewById(R.id.appointManageViewDatefamilyui);
+        durationField = findViewById(R.id.endTimeFieldHistoryfamilyui);
+        carerField = findViewById(R.id.carerAssignedFieldfamily);
+        addressField = findViewById(R.id.viewAddressPostcodefamilyui);
+        patientField = findViewById(R.id.PatientNameFieldHistoryfamilyui);
+        notesField = findViewById(R.id.notesFieldfamilyui);
         trackCarerBtn = findViewById(R.id.trackHomePageAppointmentBtn);
         callCarerBtn = findViewById(R.id.callHomePageCarerBtn);
-        cardViewPatientHome = findViewById(R.id.cardViewPatientMain);
-        upcomingAppointmentPatient = findViewById(R.id.upcommingAppointmentLabel);
+        cardViewPatientHome = findViewById(R.id.cardViewPatientFamilyMain);
+        upcomingAppointmentPatient = findViewById(R.id.upcomingFamilyAppointmentLabel);
         settingPatient = findViewById(R.id.settingBtn);
         historyLogBtn = findViewById(R.id.historyLogBtn);
-        patientUserID = findViewById(R.id.patientID);
+        patientUserID = findViewById(R.id.myID);
 
 
     }
@@ -232,56 +225,56 @@ public class MainUIPatientActivity extends AppCompatActivity {
     }
 
     private void setupUpcomingAppointmentUI(){
-        Query query = fireStore.collection("appointmentRequest").whereEqualTo("status","Assigned").whereEqualTo("user_id",GlobalVar.current_user_id);
-                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()) {
-                                ArrayList<Date> dateCheck = new ArrayList<>();
-                                ArrayList<String> upcomingID = new ArrayList<>();
+        Query query = fireStore.collection("appointmentRequest").whereEqualTo("status","Assigned").whereEqualTo("user_id",GlobalVar.family_id); //where the user is my family id
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    ArrayList<Date> dateCheck = new ArrayList<>();
+                    ArrayList<String> upcomingID = new ArrayList<>();
 
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    try {
-                                        Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
-                                        Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", ""));
-                                        System.out.println(b +  "  THIS IS DATE");
-                                        System.out.println(" this is today's date " + d);
-                                        if(d.before(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", "")))) {
-                                            System.out.println("HEREERERERERE " + document.getId() + "  === " + document.get("time").toString().replace(" ", ""));
-                                            dateCheck.add(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() + " " + document.get("time").toString().replace(" ", "")));
-                                            upcomingID.add(document.getId());
-                                        }
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                System.out.println("HERE IS THE SIZE " + dateCheck.size());
-                                if(dateCheck.size()>1) {
-                                    for (int i = 0; i < dateCheck.size(); i++) { //find earliest date from patient's assigned appointment
-                                        for (int j = 0; j < dateCheck.size(); j++) {
-                                            if (dateCheck.get(i).before(dateCheck.get(j))) {
-                                                smallestDate = dateCheck.get(i);
-                                                smallestDateAppointmentID = upcomingID.get(i);
-                                                System.out.println("aaaaaaaaaaaaaaaaglspglapslggggggggggggggggggg " + smallestDateAppointmentID);
-                                                fillCardView();
-                                                upcomingAppointmentPatient.setVisibility(View.VISIBLE);
-                                                cardViewPatientHome.setVisibility(View.VISIBLE);
-                                            }
-                                        }
-                                    }
-                                } else if(dateCheck.size() != 0) {
-                                    smallestDateAppointmentID = upcomingID.get(0);
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        try {
+                            Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
+                            Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", ""));
+                            System.out.println(b +  "  THIS IS DATE");
+                            System.out.println(" this is today's date " + d);
+                            if(d.before(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", "")))) {
+                                System.out.println("HEREERERERERE " + document.getId() + "  === " + document.get("time").toString().replace(" ", ""));
+                                dateCheck.add(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() + " " + document.get("time").toString().replace(" ", "")));
+                                upcomingID.add(document.getId());
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("HERE IS THE SIZE " + dateCheck.size());
+                    if(dateCheck.size()>1) {
+                        for (int i = 0; i < dateCheck.size(); i++) { //find earliest date from patient's assigned appointment
+                            for (int j = 0; j < dateCheck.size(); j++) {
+                                if (dateCheck.get(i).before(dateCheck.get(j))) {
+                                    smallestDate = dateCheck.get(i);
+                                    smallestDateAppointmentID = upcomingID.get(i);
+                                    System.out.println("aaaaaaaaaaaaaaaaglspglapslggggggggggggggggggg " + smallestDateAppointmentID);
                                     fillCardView();
                                     upcomingAppointmentPatient.setVisibility(View.VISIBLE);
                                     cardViewPatientHome.setVisibility(View.VISIBLE);
-                                    System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
-                                } else
-                                    cardViewPatientHome.setVisibility(View.GONE);
-                                    upcomingAppointmentPatient.setVisibility(View.GONE);
-
+                                }
                             }
                         }
-                    });
+                    } else if(dateCheck.size() != 0) {
+                        smallestDateAppointmentID = upcomingID.get(0);
+                        fillCardView();
+                        upcomingAppointmentPatient.setVisibility(View.VISIBLE);
+                        cardViewPatientHome.setVisibility(View.VISIBLE);
+                        System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
+                    } else
+                        cardViewPatientHome.setVisibility(View.VISIBLE);
+                    upcomingAppointmentPatient.setVisibility(View.GONE);
+
+                }
+            }
+        });
     }
     private void setupUserInformation(){
         DocumentReference docRef = fireStore.collection("users").document(firebaseAuth.getCurrentUser().getUid());
@@ -293,7 +286,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                     if (document.exists()) {
                         //queryUserType();
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
+//                        Long typeNumber = (Long)document.get("user_type"); //use long instead of int. lol
 
                         GlobalVar.current_user = document.get("name").toString();
                         //String name = document.get("name").toString();
@@ -301,7 +294,7 @@ public class MainUIPatientActivity extends AppCompatActivity {
                         txt_username.setText(GlobalVar.current_user);
                         patientUserID.setText(firebaseAuth.getCurrentUser().getUid());
 
-                       // txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
+                        // txt_ratingScore.setText("Rating: " + GlobalVar.user_rating);
 
 
                     } else {
