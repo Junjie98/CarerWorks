@@ -8,10 +8,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -32,8 +36,9 @@ import java.util.Map;
 
 public class settingActivity extends AppCompatActivity {
 
+    public static final String TAG = "TAG";
     Switch drivingModeSwitch;
-    Button changeContactNum;
+    Button changeContactNum,updateMedicalRecord;
     ImageButton backBtn;
     TextView travelModeLabel;
     //constants
@@ -43,6 +48,8 @@ public class settingActivity extends AppCompatActivity {
     public static final String SWITCH1 = "switch1";
     public static boolean switchOnOff;
     private FirebaseUser currentUser;
+    private FirebaseFirestore fireStore;
+    private String condition,allergic,daily_pref,disability;
 
 
     @Override
@@ -50,7 +57,7 @@ public class settingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         setupSettingUI();
-
+        checkPatientType(); //if patient, take value from database
         if(GlobalVar.user_type != "carer"){
             drivingModeSwitch.setVisibility(View.GONE);
             travelModeLabel.setVisibility(View.GONE);
@@ -60,6 +67,111 @@ public class settingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        updateMedicalRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder updateRecord = new AlertDialog.Builder(settingActivity.this);
+                updateRecord.setTitle("Update Medical Record");
+                updateRecord.setMessage("\n");
+                LinearLayout layout = new LinearLayout(settingActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                LinearLayout.LayoutParams layParam = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                LinearLayout.LayoutParams layParamLabel = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                layParam.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin); //take value from dimen
+                layParam.topMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                layParam.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                layParamLabel.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginlabel);
+
+                final TextView conditionLabel = new TextView(settingActivity.this);
+                final EditText conditionField = new EditText(settingActivity.this);
+                conditionLabel.setText("Any Condition, Illness or Disability:");
+                conditionField.setText(condition);
+                final TextView allergicLabel = new TextView(settingActivity.this);
+                final EditText allergicField = new EditText(settingActivity.this);
+                allergicLabel.setText("Any allergic or intolerant:");
+                allergicField.setText(allergic);
+                final TextView dailyPrefLabel = new TextView(settingActivity.this);
+                final EditText dailyPrefField = new EditText(settingActivity.this);
+                dailyPrefLabel.setText("Daily Preferences:");
+                dailyPrefField.setText(daily_pref);
+                final TextView disabilityLabel = new TextView(settingActivity.this);
+                final EditText disabilityField = new EditText(settingActivity.this);
+                disabilityLabel.setText("Any personal difficulties / disability:");
+                disabilityField.setText(disability);
+                //set the margin configured earlier
+                conditionField.setLayoutParams(layParam);
+                allergicField.setLayoutParams(layParam);
+                dailyPrefField.setLayoutParams(layParam);
+                disabilityField.setLayoutParams(layParam);
+
+                conditionLabel.setLayoutParams(layParamLabel);
+                allergicLabel.setLayoutParams(layParamLabel);
+                dailyPrefLabel.setLayoutParams(layParamLabel);
+                disabilityLabel.setLayoutParams(layParamLabel);
+
+                layout.addView(conditionLabel);
+                layout.addView(conditionField);
+                layout.addView(allergicLabel);
+                layout.addView(allergicField);
+                layout.addView(dailyPrefLabel);
+                layout.addView(dailyPrefField);
+                layout.addView(disabilityLabel);
+                layout.addView(disabilityField);
+                updateRecord.setView(layout);
+
+                updateRecord.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                updateRecord.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        String newPhone =  editPhoneNum.getText().toString();
+                        //set default value;
+                        String newCondition = "none";
+                        String newAllergic = "none";
+                        String newDailyPref = "none";
+                        String newDisability = "none";
+                        ////
+
+                        newCondition = conditionField.getText().toString();
+                        newAllergic = allergicField.getText().toString();
+                        newDailyPref = dailyPrefField.getText().toString();
+                        newDisability = disabilityField.getText().toString();
+
+                        fireStore = FirebaseFirestore.getInstance();
+                        Map<String, Object> newUpdate = new HashMap<>();
+                        newUpdate.put("allergic", newAllergic);
+                        newUpdate.put("condition", newCondition);
+                        newUpdate.put("daily_pref", newDailyPref);
+                        newUpdate.put("disability", newDisability);
+                        fireStore.collection("medical_record").document(GlobalVar.current_user_id).update(newUpdate);
+                        Toast.makeText(settingActivity.this, "Medical Record has been updated", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).setCancelable(false);
+                AlertDialog dialog = updateRecord.create();
+                dialog.setOnShowListener(dialog1 -> {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            .setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                            .setTextColor(getResources().getColor(android.R.color.holo_blue_light));
+                });
+                dialog.show();
+
+
             }
         });
 
@@ -124,6 +236,7 @@ public class settingActivity extends AppCompatActivity {
         changeContactNum = findViewById(R.id.updateContact);
         backBtn = findViewById(R.id.imageBackBtn);
         travelModeLabel = findViewById(R.id.travelModeLabel);
+        updateMedicalRecord = findViewById(R.id.updateMedicalRecordBtn);
 
     }
 
@@ -157,64 +270,35 @@ public class settingActivity extends AppCompatActivity {
         //.setText(text);
         drivingModeSwitch.setChecked(switchOnOff);
     }
+    private void checkPatientType(){
+        if(GlobalVar.user_type == "patient"){
+            findViewById(R.id.updateMedicalRecordBtn).setVisibility(View.VISIBLE);
+            fireStore = FirebaseFirestore.getInstance();
+            //setup the variable for dialogAlert.Builder later.
+            DocumentReference medRef = fireStore.collection("medical_record").document(GlobalVar.current_user_id);
+            medRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            condition = document.get("condition").toString();
+                            allergic = document.get("allergic").toString();
+                            daily_pref = document.get("daily_pref").toString();
+                            disability = document.get("disability").toString();
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+        }else{
+            findViewById(R.id.updateMedicalRecordBtn).setVisibility(View.GONE);
+        }
+    }
 
-//    private void changePassword(){
-//        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        final String email = currentUser.getEmail();
-//        AlertDialog.Builder changePassBuilder = new AlertDialog.Builder(settingActivity.this);
-//        changePassBuilder.setTitle("Change Password");
-//        changePassBuilder.setMessage("Enter your old password");
-//        final EditText oldPassField = new EditText(this);
-//        changePassBuilder.setView(oldPassField);
-//        final String oldPassw = oldPassField.getText().toString();
-//        changePassBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        });
-//        changePassBuilder.setPositiveButton("Validate User", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassw);
-//
-//                        currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                if(task.isSuccessful()){
-//                                    AlertDialog.Builder changePassBuilder = new AlertDialog.Builder(settingActivity.this);
-//                                    changePassBuilder.setTitle("Change Password");
-//                                    changePassBuilder.setMessage("Enter your new password");
-//                                    final EditText oldPassField = new EditText(this);
-//                                    currentUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<Void> task) {
-//                                            if(!task.isSuccessful()){
-//                                                Toast.makeText(settingActivity.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
-//                                            }else {
-//                                                Toast.makeText(settingActivity.this, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        }
-//                                    });
-//                                }else {
-//                                    Toast.makeText(settingActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        })
-//                                .setCancelable(false);
-//                        AlertDialog dialog = changePassBuilder.create();
-//                        dialog.setOnShowListener(dialog1 -> {
-//                            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-//                                    .setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-//                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-//                                    .setTextColor(getResources().getColor(android.R.color.holo_blue_light));
-//                        });
-//
-//                        dialog.show();
-//                    }
-//                });
-//
-//    }
 }
 
 

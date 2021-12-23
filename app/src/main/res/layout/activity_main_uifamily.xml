@@ -96,7 +96,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:visibility="visible"
-                app:cardBackgroundColor="#BCBCBC"
+                app:cardBackgroundColor="#B63737"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="30dp">
 

@@ -78,6 +78,55 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
 
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="Password Policy"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text=" 1) At least one numeric characte"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="2) at least one lowercase character"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="3) At least one uppercase character"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="4) At least one special symbol in @#£!$%"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="5) Password length should be between 9 and 25"
+                android:textColor="#FFFFFF" />
+
             <EditText
                 android:id="@+id/registerFullNameTxt"
                 android:layout_width="283dp"
@@ -126,6 +175,7 @@
                 android:ems="10"
                 android:hint="DOB e.g: dd/mm/yyyy"
                 android:inputType="date"
+                android:focusable="false"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
@@ -167,11 +217,108 @@
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp"
-                android:textColor="@color/white"
                 android:layout_marginTop="15dp"
                 android:layout_gravity="center"
                 android:textColorHint="@color/white"
                 android:visibility="gone"/>
+
+
+            <TextView
+                android:id="@+id/helloExplain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:text="For the first time, we will be needing additional personal information such as medical illness, any conditions,  dietary requirements and etc..."
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/conditionLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:text="Do you have any condition, illness or disability?" />
+
+            <EditText
+                android:id="@+id/illnessGetField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:visibility="gone"
+                android:hint="e.g: Older Age, Alzheimer's disease, Heart disease" />
+
+            <TextView
+                android:id="@+id/allergicLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:text="Do you have allergies or intolerance?" />
+
+            <EditText
+                android:id="@+id/allergicGetField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:visibility="gone"
+                android:hint="e.g: Allergic to peanuts, garlic, or any medication" />
+
+            <TextView
+                android:id="@+id/dailyPrefLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:text="Daily preferences" />
+
+            <EditText
+                android:id="@+id/getPreferencesField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:visibility="gone"
+                android:hint="e.g: Dancing, Watching movies, Tea, Musics" />
+
+            <TextView
+                android:id="@+id/personalDiffLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                android:text="Do you have any personal difficulties/disability" />
+
+            <EditText
+                android:id="@+id/personalDifficultiesField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:visibility="gone"
+                android:hint="e.g: Deaf, Blind, Can't understand without hand sign" />
+
 
             <TextView
                 android:id="@+id/alreadyHaveAnAccountLabel"
@@ -181,6 +328,8 @@
                 android:layout_marginTop="25dp"
                 android:layout_gravity="center"
                 android:textColor="#FFFFF1" />
+
+
 
             <TextView
                 android:id="@+id/loginHereLabel"
@@ -197,6 +346,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
+                android:layout_marginBottom="50dp"
                 android:text="Register" />
 
         </LinearLayout>

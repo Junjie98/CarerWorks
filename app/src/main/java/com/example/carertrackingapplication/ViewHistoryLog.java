@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -163,7 +161,7 @@ public class ViewHistoryLog extends AppCompatActivity {
             nameTV = itemView.findViewById(R.id.PatientNameFieldHistory);
             notesTV = itemView.findViewById(R.id.notesFieldHistory);
             carerTV = itemView.findViewById(R.id.carerAssignedFieldHistory);
-            rateBtn = itemView.findViewById(R.id.ratingBtn);
+            rateBtn = itemView.findViewById(R.id.completeBtn);
             callBtn = itemView.findViewById(R.id.contactBtn);
 
             Intent callIntent = new Intent(Intent.ACTION_CALL);

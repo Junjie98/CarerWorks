@@ -35,6 +35,14 @@
             android:layout_marginTop="80dp"
             android:text="Change Contact Number" />
 
+        <Button
+            android:id="@+id/updateMedicalRecordBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Update Medical Record"
+            tools:visibility="gone" />
+
         <TextView
             android:id="@+id/travelModeLabel"
             android:layout_width="match_parent"
@@ -48,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Driving Mode" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

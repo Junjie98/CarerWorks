@@ -262,7 +262,6 @@ public class MainUIPatientActivity extends AppCompatActivity {
                                             if (dateCheck.get(i).before(dateCheck.get(j))) {
                                                 smallestDate = dateCheck.get(i);
                                                 smallestDateAppointmentID = upcomingID.get(i);
-                                                System.out.println("aaaaaaaaaaaaaaaaglspglapslggggggggggggggggggg " + smallestDateAppointmentID);
                                                 fillCardView();
                                                 upcomingAppointmentPatient.setVisibility(View.VISIBLE);
                                                 cardViewPatientHome.setVisibility(View.VISIBLE);
@@ -274,11 +273,11 @@ public class MainUIPatientActivity extends AppCompatActivity {
                                     fillCardView();
                                     upcomingAppointmentPatient.setVisibility(View.VISIBLE);
                                     cardViewPatientHome.setVisibility(View.VISIBLE);
-                                    System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
-                                } else
+                                } else {
                                     cardViewPatientHome.setVisibility(View.GONE);
+                                    //upcomingAppointmentPatient.setText("No Appointment Has Been Setup Yet");
                                     upcomingAppointmentPatient.setVisibility(View.GONE);
-
+                                }
                             }
                         }
                     });

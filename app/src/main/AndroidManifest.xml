@@ -22,10 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarerTrackingApplication">
         <activity
-            android:name=".MainUIFamilyActivity"
-            android:launchMode="singleTask"
+            android:name=".PatientInfoGetActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".MainUIFamilyActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ViewHistoryLog"
             android:exported="false" />
@@ -40,9 +42,6 @@
             android:exported="false" />
         <activity
             android:name=".ViewRequestAppointment"
-            android:exported="false" />
-        <activity
-            android:name=".ViewAppointmentActivity"
             android:exported="false" />
         <activity
             android:name=".MakeAppointment"
@@ -105,7 +104,6 @@
                 <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

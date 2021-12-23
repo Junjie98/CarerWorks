@@ -30,12 +30,11 @@ public class UserTypeActivity extends AppCompatActivity {
         patientUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //or alternatively do it this way
-                //Intent intent = new Intent(UserTypeActivity.this, stillnotyetimplemented.class);
-                //startActivity(intent);
-                //RegisterActivity regisActivityPatient = new RegisterActivity();
-                //regisActivityPatient.setPatientBool(true);
+                //set btnValue
                 patient = true;
+                //reset others in-case user select between it.
+                carer = false;
+                patientFamily = false;
                 GlobalVar.user_type = "patient";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }
@@ -44,12 +43,11 @@ public class UserTypeActivity extends AppCompatActivity {
         patientFamilyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //or alternatively do it this way
-                //Intent intent = new Intent(UserTypeActivity.this, stillnotyetimplemented.class);
-                //startActivity(intent);
-//                RegisterActivity regisActivityPatient = new RegisterActivity();
-//                regisActivityPatient.setPatientFamilyBool(true);
+                //set btnValue
                 patientFamily = true;
+                //reset others in-case user select between it.
+                carer = false;
+                patient = false;
                 GlobalVar.user_type = "patientFamily";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }
@@ -58,12 +56,11 @@ public class UserTypeActivity extends AppCompatActivity {
         carerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //or alternatively do it this way
-                //Intent intent = new Intent(UserTypeActivity.this, stillnotyetimplemented.class);
-                //startActivity(intent);
-//                RegisterActivity regisActivityPatient = new RegisterActivity();
-//                regisActivityPatient.setCarerBool(true);
+                //set btnValue
                 carer = true;
+                //reset others in-case user select between it.
+                patientFamily = false;
+                patient = false;
                 GlobalVar.user_type = "carer";
                 startActivity(new Intent(UserTypeActivity.this, RegisterActivity.class));
             }

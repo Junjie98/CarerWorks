@@ -3,11 +3,15 @@ package com.example.carertrackingapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +32,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -38,14 +45,19 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerBtn;
     private EditText emailTxtField,patientFamilyField ,fullNameTxtField, passwordTxtField, dobTxtField, genderTxtField, phoneTxtField;
     private FirebaseAuth firebaseAuth;
+    EditText illnessConditionField, allergicIntolerancesField, dailyPreferenceField, personalDifficultiesField;
+    private DatePickerDialog.OnDateSetListener setDateListener;
+    private String date;
     boolean existInDatabase;
     //for database firestore
     private FirebaseFirestore fireStore;
-//    private boolean carer = false;
-//    private boolean patient = false;
-//    private boolean patientFamily = false;
-
-    private String ratingAtCreated = "0.0";
+    //default value for patient medical record.
+    String condition = "none";
+    String allergic = "none";
+    String dailyPref = "none";
+    String disability = "none";
+    private Double ratingAtCreated = 0.0;
+    private String passwordPolicyRexpression = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#£!$%]).{9,25}$";
 
     @Override
     protected void onDestroy() {
@@ -57,12 +69,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userregistration);
         registerUIView();
+        dateFieldSetup();
         UserTypeActivity a = new UserTypeActivity();
-        if(GlobalVar.user_type == "patientFamily"){
-            patientFamilyField.setVisibility(View.VISIBLE);
-        }else{
-            patientFamilyField.setVisibility(View.GONE);
-        }
+        checkUserType();
+
         firebaseAuth = FirebaseAuth.getInstance();
         fireStore = FirebaseFirestore.getInstance();
         //The onCreate() method of Application class implementation is the entry point of your Android application where you get control over the logic part.
@@ -88,7 +98,15 @@ public class RegisterActivity extends AppCompatActivity {
                     String userPhone = phoneTxtField.getText().toString().trim();
                     String famPatientID = patientFamilyField.getText().toString().trim();
 
-                    int admintype = 0;
+
+                    //set user details into it
+                    condition = illnessConditionField.getText().toString().trim();
+                    allergic = allergicIntolerancesField.getText().toString().trim();
+                    dailyPref = dailyPreferenceField.getText().toString().trim();
+                    disability = personalDifficultiesField.getText().toString().trim();
+
+
+                   // int admintype = 0;
                     int carertype = 1;
                     int patienttype = 2;
                     int patientFamilyType =3;
@@ -106,10 +124,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 //update the server as it differs from my json file during creation.
                                 DocumentReference docRef = fireStore.collection("users").document(user_id);
 
+
                                 if(a.getCarerBool()) {
-                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child("Carer").child((user_id));
-                                    current_user_db.setValue(true); //save it to the database ? //CHECK RULES
-                                    //DocumentReference docRef = fireStore.collection("users").document(user_id);
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
@@ -134,8 +150,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     System.out.println("I am in carer database"); //role 0 admin, role 1 carer, role 2 patient, role 3 patient fam
                                 }
                                 if(a.getPatientBool()) {
-                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child("Patient").child((user_id));
-                                    current_user_db.setValue(true); //save it to the database ?
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
@@ -156,12 +170,29 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
+
+                                    //setup doc ref for medical record database.
+                                    DocumentReference dofRefPatientInfo = fireStore.collection("medical_record").document(user_id);
+                                    Map<String, Object> userMedicalRecord = new HashMap<>();
+                                    userMedicalRecord.put("condition",condition);
+                                    userMedicalRecord.put("allergic",allergic);
+                                    userMedicalRecord.put("daily_pref",dailyPref);
+                                    userMedicalRecord.put("disability",disability);
+                                    dofRefPatientInfo.set(userMedicalRecord).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d(TAG,"onSuccess: medical record saved for  " + user_id);
+                                            try{
+                                                Thread.sleep(1000);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
                                     System.out.println("I am in patient database");
 
                                 }
                                 if(a.getPatientFamilyBool()) {
-                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance("https://carertrackingapplication-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Users").child("PatientFamily").child((user_id));
-                                    current_user_db.setValue(true); //save it to the database ?
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email",userEmail);
                                     user.put("name",userFullName);
@@ -195,6 +226,36 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
+    private void checkUserType(){
+
+        if(GlobalVar.user_type == "patientFamily"){
+            patientFamilyField.setVisibility(View.VISIBLE);
+        }else{
+            patientFamilyField.setVisibility(View.GONE);
+        }
+
+        if(GlobalVar.user_type == "patient"){
+            findViewById(R.id.helloExplain).setVisibility(View.VISIBLE);
+            findViewById(R.id.conditionLabel).setVisibility(View.VISIBLE);
+            findViewById(R.id.illnessGetField).setVisibility(View.VISIBLE);
+            findViewById(R.id.allergicLabel).setVisibility(View.VISIBLE);
+            findViewById(R.id.allergicGetField).setVisibility(View.VISIBLE);
+            findViewById(R.id.dailyPrefLabel).setVisibility(View.VISIBLE);
+            findViewById(R.id.getPreferencesField).setVisibility(View.VISIBLE);
+            findViewById(R.id.personalDiffLabel).setVisibility(View.VISIBLE);
+            findViewById(R.id.personalDifficultiesField).setVisibility(View.VISIBLE);
+        }else{
+            findViewById(R.id.helloExplain).setVisibility(View.GONE);
+            findViewById(R.id.conditionLabel).setVisibility(View.GONE);
+            findViewById(R.id.illnessGetField).setVisibility(View.GONE);
+            findViewById(R.id.allergicLabel).setVisibility(View.GONE);
+            findViewById(R.id.allergicGetField).setVisibility(View.GONE);
+            findViewById(R.id.dailyPrefLabel).setVisibility(View.GONE);
+            findViewById(R.id.getPreferencesField).setVisibility(View.GONE);
+            findViewById(R.id.personalDiffLabel).setVisibility(View.GONE);
+            findViewById(R.id.personalDifficultiesField).setVisibility(View.GONE);
+        }
+    }
     protected void registerUIView(){
         loginLabel = (TextView)findViewById(R.id.loginHereLabel); //casting it into TextView as it is in a new function.
         emailTxtField = (EditText)findViewById((R.id.registerEmailText));
@@ -206,7 +267,45 @@ public class RegisterActivity extends AppCompatActivity {
         passwordTxtField = (EditText)findViewById(R.id.registerPasswordText);
         //confirmPasswordTxtField= (EditText)findViewById(R.id.registerPasswordConfirmationText);
         registerBtn = (Button)findViewById(R.id.registerButton);
+
         patientFamilyField = findViewById(R.id.familyPatientID);
+        illnessConditionField = findViewById(R.id.illnessGetField);
+        allergicIntolerancesField = findViewById(R.id.allergicGetField);
+        dailyPreferenceField = findViewById(R.id.getPreferencesField);
+        personalDifficultiesField = findViewById(R.id.personalDifficultiesField);
+    }
+
+    private void dateFieldSetup(){
+        Calendar calendar = Calendar.getInstance();
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int month = calendar.get(Calendar.MONTH);
+        final int year = calendar.get(Calendar.YEAR);
+
+        dobTxtField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        RegisterActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,setDateListener,year,month,day);
+                datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                datePickerDialog.show();
+            }
+        });
+
+        setDateListener = new DatePickerDialog.OnDateSetListener(){
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                date = dayOfMonth+"/"+month+"/"+year;
+                dobTxtField.setText(date);
+            }
+        };
+    }
+
+    private boolean validatePasswordPolicy(String pass, String policy){
+        Pattern pattern = Pattern.compile(policy);
+        Matcher matcher = pattern.matcher(pass);
+        return matcher.matches();
     }
 
     private boolean validateRegisterField() {
@@ -219,33 +318,32 @@ public class RegisterActivity extends AppCompatActivity {
         String phoneNumber = phoneTxtField.getText().toString();
         String checkPatientFamilyField = patientFamilyField.getText().toString();
 
-
-//        DocumentReference docRef = fireStore.collection("users").document(checkPatientFamilyField);
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        existInDatabase = true;
-//
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                        existInDatabase = false;
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                    existInDatabase = false;
-//                }
-//            }
-//        });
-
         if (emailRegister.isEmpty() || fullNameRegister.isEmpty() || passwordRegister.isEmpty() || dobRegister.isEmpty() || genderRegister.isEmpty() || phoneNumber.isEmpty()) {
             Toast.makeText(this, "Please fill up all the fields before retying.",
                     Toast.LENGTH_SHORT).show(); //error message. toast lenth short = time to be displayed
             validateResult = false;
+        }else{
+            //check this first then check password policy below
+            if(GlobalVar.user_type == "patientFamily"){
 
+                if(checkPatientFamilyField.isEmpty()){
+                    Toast.makeText(this, "Please fill up patientIDField.",
+                            Toast.LENGTH_SHORT).show();
+                    validateResult = false;
+                }else{
+                    validateResult = true;
+                }
+
+            }
+
+            if(validatePasswordPolicy(passwordRegister,passwordPolicyRexpression)){
+                validateResult = true;
+            }else{
+                Toast.makeText(this, "Please follow the password policy.",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
+
         if(GlobalVar.user_type == "patientFamily"){
 
             if(checkPatientFamilyField.isEmpty()){
@@ -255,20 +353,11 @@ public class RegisterActivity extends AppCompatActivity {
             }else{
                 validateResult = true;
             }
-//            if(existInDatabase){
-//                validateResult = true;
-//            }
 
         }
-
-
-//        if(passwordRegister.length()<=9){
-//            validateResult = false;
-//
+//        else {
+//            validateResult = true;
 //        }
-        else {
-            validateResult = true;
-        }
         return validateResult;
     }
 

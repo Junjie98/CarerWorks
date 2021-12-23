@@ -8,19 +8,19 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/appointmentViewRecyclerCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="312dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
 
+        android:visibility="visible"
         app:cardBackgroundColor="#BCBCBC"
         app:cardCornerRadius="12dp"
-        app:cardElevation="30dp"
-        android:visibility="gone">
+        app:cardElevation="30dp">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="350dp"
+            android:layout_height="317dp"
             android:layout_marginLeft="16dp"
             android:orientation="vertical">
 
@@ -56,6 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:text="Status"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -66,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/statusLabelHistory"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:text="Assigned"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -118,7 +120,7 @@
                     android:layout_below="@id/timeLabelHistory"
                     android:layout_marginBottom="10dp"
                     android:layout_toRightOf="@id/HistoryViewTimeField"
-                    android:paddingLeft="20dp"
+                    android:paddingLeft="60dp"
                     android:text="11:00am"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -129,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
 
+                    android:layout_marginRight="10dp"
                     android:text="Carer: "
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -139,6 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/carerAssignedLabelHistory"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:text="Tom"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
@@ -178,6 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:text="Patient: "
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -188,6 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/addressPostcodeLabel"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:text="Jerry"
                     android:textColor="@color/black"
@@ -228,11 +234,21 @@
 
             <RelativeLayout
                 android:id="@+id/t5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="101dp"
                 android:layout_below="@+id/notes"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/medicalRecordBtn"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:backgroundTint="@color/white"
+                    android:text="Medical Record"
+                    android:textColor="#00BCD4"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/contactBtn"
@@ -258,7 +274,7 @@
                     android:visibility="gone" />
 
                 <Button
-                    android:id="@+id/ratingBtn"
+                    android:id="@+id/completeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

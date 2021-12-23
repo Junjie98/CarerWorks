@@ -4,7 +4,7 @@ package com.example.carertrackingapplication.appinfo;
 
 public class Appointment {
 
-    String address, date, time, duration, name, notes, postcode,user_id,status,carer_id,carer_name;
+    String address, date, time, duration, name, notes, postcode,user_id,status,carer_id,carer_name, family_id_appointment;
 
     public String getCarer_name() {
         return carer_name;
@@ -50,7 +50,15 @@ public class Appointment {
         this.user_id = user_id;
     }
 
-    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode, String user_id, String carer_name, String carer_id){ //for us to retrieve data.
+    public String getFamily_id_appointment() {
+        return family_id_appointment;
+    }
+
+    public void setFamily_id_appointment(String family_id_appointment) {
+        this.family_id_appointment = family_id_appointment;
+    }
+
+    private Appointment(String address, String date, String time, String duration, String name, String notes, String postcode, String user_id, String carer_name, String carer_id, String family_id_appointment){ //for us to retrieve data.
         this.address = address;
         this.date = date;
         this.time = time;
@@ -61,6 +69,7 @@ public class Appointment {
         this.user_id = user_id;
         this.carer_name = carer_name;
         this.carer_id = carer_id;
+        this.family_id_appointment = family_id_appointment;
     }
 
     public String getAddress() {

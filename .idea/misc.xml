@@ -4,29 +4,46 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_1.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_10.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_11.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_12.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_13.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_14.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_15.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_16.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_2.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_3.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_4.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_5.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_6.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_7.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_8.xml" value="0.2755208333333333" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/avatar_9.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/background_button.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/background_input.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.20625" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/ic_baseline_history.xml" value="0.1453125" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/ic_baseline_settings_applications_24.xml" value="0.1875" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout-w1240dp/content_main.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout-w600dp/content_main.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_appointment_action_type.xml" value="0.2318840579710145" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_carer_map_tracker.xml" value="0.18432971014492755" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_carer_map_tracker.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_carer_view_appointment_main.xml" value="0.14868421052631578" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main.xml" value="0.39057239057239057" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_ui.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_ui_patient.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_uicarer.xml" value="0.264" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_uifamily.xml" value="0.264" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_uifamily.xml" value="0.16" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_main_uipatient_family.xml" value="0.18229166666666666" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_make_appointment.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_manage_appointment.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_maps_tracker.xml" value="0.1" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_patient_info_get.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_setting.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_user_type.xml" value="0.264" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_userlogin.xml" value="0.2" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_userregistration.xml" value="0.25" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_userregistration.xml" value="0.4" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_appointment.xml" value="0.2" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_appointment_all.xml" value="0.4" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/activity_view_history_log.xml" value="0.259375" />
@@ -41,7 +58,8 @@
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/item_transform.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/nav_header_main.xml" value="0.24094202898550723" />
         <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/settings_activity.xml" value="0.17916666666666667" />
-        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/view_appointment.xml" value="0.136" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/layout/view_appointment.xml" value="0.4" />
+        <entry key="..\:/Users/nelso/AndroidStudioProjects/CarerTrackingApplication/app/src/main/res/xml/root_preferences.xml" value="0.4" />
       </map>
     </option>
   </component>

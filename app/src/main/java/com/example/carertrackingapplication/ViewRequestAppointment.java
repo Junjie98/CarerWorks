@@ -1,23 +1,31 @@
 package com.example.carertrackingapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.carertrackingapplication.appinfo.Appointment;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -81,7 +89,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
                     //notifyDataSetChanged();
                     DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
                     holder.appointmentID = snapshot.getId();
-                    System.out.println("HELLO JIALINGYI " + holder.appointmentID);
+                    System.out.println("HELLO JIALINGYI " + holder.appointmentID + " status: " + model.getStatus() + ", " + model.getTime());
                     return;
 
                 }else {
@@ -108,11 +116,27 @@ public class ViewRequestAppointment extends AppCompatActivity {
                     DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
                     holder.appointmentID = snapshot.getId();
 
+                    //setup the variable for dialogAlert.Builder later.
+                    DocumentReference medRef = fireStore.collection("medical_record").document(holder.userid);
+                    medRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    holder.condition = document.get("condition").toString();
+                                    holder.allergic = document.get("allergic").toString();
+                                    holder.daily_pref = document.get("daily_pref").toString();
+                                    holder.disability = document.get("disability").toString();
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
                 }
-                //System.out.println(model.getUser_ID()+ " LOOOOOOOOOOOOOOOOOOOOOOOOOK");
-
-
-
             }
         };
 
@@ -128,6 +152,7 @@ public class ViewRequestAppointment extends AppCompatActivity {
         TextView addressTV, dateTV, timeTV, durationTV, nameTV, notesTV;
         Button assignMeBtn;
         Appointment app;
+        String allergic, condition, daily_pref, disability;
 
         int position;
         //String userid;
@@ -168,8 +193,98 @@ public class ViewRequestAppointment extends AppCompatActivity {
                             .update(appointmentRequestUpdate);
                 }
             });
+
+            itemView.findViewById(R.id.viewPatientMedicalRecordBtn).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder showInfo = new AlertDialog.Builder(ViewRequestAppointment.this);
+                    showInfo.setTitle("MedicalRecord");
+                    showInfo.setMessage("Medical Record for: " +name+ "\n");
+                    LinearLayout layout = new LinearLayout(ViewRequestAppointment.this);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    LinearLayout.LayoutParams layParam = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    LinearLayout.LayoutParams layParamLabel = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    layParam.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin); //take value from dimen
+                    layParam.topMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                    layParam.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                    layParamLabel.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginlabel);
+
+                    final TextView conditionLabel = new TextView(ViewRequestAppointment.this);
+                    final TextView conditionField = new TextView(ViewRequestAppointment.this);
+                    conditionLabel.setText("Any Condition, Illness or Disability:");
+                    conditionField.setText(condition);
+                    final TextView allergicLabel = new TextView(ViewRequestAppointment.this);
+                    final TextView allergicField = new TextView(ViewRequestAppointment.this);
+                    allergicLabel.setText("Any allergic or intolerant:");
+                    allergicField.setText(allergic);
+                    final TextView dailyPrefLabel = new TextView(ViewRequestAppointment.this);
+                    final TextView dailyPrefField = new TextView(ViewRequestAppointment.this);
+                    dailyPrefLabel.setText("Daily Preferences:");
+                    dailyPrefField.setText(daily_pref);
+                    final TextView disabilityLabel = new TextView(ViewRequestAppointment.this);
+                    final TextView disabilityField = new TextView(ViewRequestAppointment.this);
+                    //set the margin configured earlier
+                    conditionField.setLayoutParams(layParam);
+                    allergicField.setLayoutParams(layParam);
+                    dailyPrefField.setLayoutParams(layParam);
+                    disabilityField.setLayoutParams(layParam);
+
+                    conditionLabel.setLayoutParams(layParamLabel);
+                    allergicLabel.setLayoutParams(layParamLabel);
+                    dailyPrefLabel.setLayoutParams(layParamLabel);
+                    disabilityLabel.setLayoutParams(layParamLabel);
+
+
+
+                    //////
+                    disabilityLabel.setText("Any personal difficulties / disability:");
+                    disabilityField.setText(disability);
+                    layout.addView(conditionLabel);
+                    layout.addView(conditionField);
+                    layout.addView(allergicLabel);
+                    layout.addView(allergicField);
+                    layout.addView(dailyPrefLabel);
+                    layout.addView(dailyPrefField);
+                    layout.addView(disabilityLabel);
+                    layout.addView(disabilityField);
+                    showInfo.setView(layout);
+
+                    showInfo.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                            .setCancelable(false);
+                            AlertDialog dialog = showInfo.create();
+                            dialog.setOnShowListener(dialog1 -> {
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(android.R.color.holo_blue_light));
+                    });
+
+                    dialog.show();
+                    }
+                });
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Override
     protected void onStop() {
         super.onStop();

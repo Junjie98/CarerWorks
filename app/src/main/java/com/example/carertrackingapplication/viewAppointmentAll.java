@@ -31,8 +31,10 @@ import com.example.carertrackingapplication.appinfo.Appointment;
 import com.example.carertrackingapplication.variable.GlobalVar;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -99,19 +101,22 @@ public class viewAppointmentAll extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull AllAppointmentViewHolder holder, int position, @NonNull Appointment model) {
 
-                try {
-                    Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
-                    Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(model.getDate() +" "+ model.getTime().replace(" ", ""));
-                    if(d.after(b)) {
-                        holder.cardView.setVisibility(View.GONE);
-                        System.out.println("I've dump one away");
-                        return;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+//                if(GlobalVar.user_type != "carer" ) {
+//                    try {
+//                        Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
+//                        Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(model.getDate() + " " + model.getTime().replace(" ", ""));
+//                        if (d.after(b)) {
+//                            holder.cardView.setVisibility(View.GONE);
+//                            System.out.println("I've dump one away");
+//                            return;
+//                        }
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 if(GlobalVar.user_type == "carer") {
+                    holder.viewMedicalRecordBtn.setVisibility(View.VISIBLE);
                     holder.routeBtn.setVisibility(View.VISIBLE);
                     holder.completeBtn.setVisibility(View.VISIBLE);
                     if (model.getStatus().equals("Assigned") && model.getCarer_id().equals(GlobalVar.current_user_id)) { //hide those that has already been assigned.
@@ -145,12 +150,33 @@ public class viewAppointmentAll extends AppCompatActivity {
 
                         holder.position = holder.getAbsoluteAdapterPosition();
                         holder.userid = model.getUser_ID();
+                        //setup the variable for dialogAlert.Builder later.
+                        DocumentReference medRef = fireStore.collection("medical_record").document(holder.userid);
+                        medRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        holder.condition = document.get("condition").toString();
+                                        holder.allergic = document.get("allergic").toString();
+                                        holder.daily_pref = document.get("daily_pref").toString();
+                                        holder.disability = document.get("disability").toString();
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
 
                         return;
 
                     } else {
 //                    assigned = false;
                         holder.cardView.setVisibility(View.GONE);
+                        holder.viewMedicalRecordBtn.setVisibility(View.GONE);
                         DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
                         holder.appointmentID = snapshot.getId();
 
@@ -163,6 +189,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                 if(GlobalVar.user_type == "patient") {
                     if (model.getUser_ID().equals(GlobalVar.current_user_id)) { //hide those that has already been assigned.
                         // assigned = true;
+                        holder.viewMedicalRecordBtn.setVisibility(View.VISIBLE);
                         holder.cardView.setVisibility(View.VISIBLE);
                         holder.routeBtn.setText("Track");
                         //notifyDataSetChanged();
@@ -199,6 +226,26 @@ public class viewAppointmentAll extends AppCompatActivity {
 
                         holder.position = holder.getAbsoluteAdapterPosition();
                         holder.userid = model.getUser_ID();
+                        //setup the variable for dialogAlert.Builder later.
+                        DocumentReference medRef = fireStore.collection("medical_record").document(holder.userid);
+                        medRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        holder.condition = document.get("condition").toString();
+                                        holder.allergic = document.get("allergic").toString();
+                                        holder.daily_pref = document.get("daily_pref").toString();
+                                        holder.disability = document.get("disability").toString();
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
 
                         return;
 
@@ -206,6 +253,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                     } else {
 //                    assigned = false;
                         holder.cardView.setVisibility(View.GONE);
+                        holder.viewMedicalRecordBtn.setVisibility(View.GONE);
                         DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAbsoluteAdapterPosition());
                         holder.appointmentID = snapshot.getId();
 
@@ -282,12 +330,13 @@ public class viewAppointmentAll extends AppCompatActivity {
     private class AllAppointmentViewHolder extends RecyclerView.ViewHolder{
 
         TextView addressTV, dateTV, timeTV, durationTV, nameCarerTV, notesTV, namePatient, statusTV;
-        Button rescheduleBtn,routeBtn, completeBtn;
+        Button rescheduleBtn,routeBtn, completeBtn, viewMedicalRecordBtn;
 
         int position;
         String address, date, duration, name, notes, postcode,status,time,userid,carerName,carerID;
         String appointmentID;
         CardView cardView;
+        String allergic, condition, daily_pref, disability;
 
         public AllAppointmentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -305,9 +354,88 @@ public class viewAppointmentAll extends AppCompatActivity {
             namePatient = itemView.findViewById(R.id.PatientNameFieldHistory);
             statusTV = itemView.findViewById(R.id.statusTextHistory);
             routeBtn = itemView.findViewById(R.id.routeBtn);
-            completeBtn = itemView.findViewById(R.id.ratingBtn);
+            completeBtn = itemView.findViewById(R.id.completeBtn);
             rescheduleBtn = itemView.findViewById(R.id.contactBtn);
+            viewMedicalRecordBtn = itemView.findViewById(R.id.medicalRecordBtn);
 
+            viewMedicalRecordBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder showInfo = new AlertDialog.Builder(viewAppointmentAll.this);
+                    showInfo.setTitle("MedicalRecord");
+                    showInfo.setMessage("Medical Record for: " +name+ "\n");
+                    LinearLayout layout = new LinearLayout(viewAppointmentAll.this);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    LinearLayout.LayoutParams layParam = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    LinearLayout.LayoutParams layParamLabel = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    layParam.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin); //take value from dimen
+                    layParam.topMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                    layParam.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                    layParamLabel.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginlabel);
+
+                    final TextView conditionLabel = new TextView(viewAppointmentAll.this);
+                    final TextView conditionField = new TextView(viewAppointmentAll.this);
+                    conditionLabel.setText("Any Condition, Illness or Disability:");
+                    conditionField.setText(condition);
+                    final TextView allergicLabel = new TextView(viewAppointmentAll.this);
+                    final TextView allergicField = new TextView(viewAppointmentAll.this);
+                    allergicLabel.setText("Any allergic or intolerant:");
+                    allergicField.setText(allergic);
+                    final TextView dailyPrefLabel = new TextView(viewAppointmentAll.this);
+                    final TextView dailyPrefField = new TextView(viewAppointmentAll.this);
+                    dailyPrefLabel.setText("Daily Preferences:");
+                    dailyPrefField.setText(daily_pref);
+                    final TextView disabilityLabel = new TextView(viewAppointmentAll.this);
+                    final TextView disabilityField = new TextView(viewAppointmentAll.this);
+                    disabilityLabel.setText("Any personal difficulties / disability:");
+                    disabilityField.setText(disability);
+                    //set the margin configured earlier
+                    conditionField.setLayoutParams(layParam);
+                    allergicField.setLayoutParams(layParam);
+                    dailyPrefField.setLayoutParams(layParam);
+                    disabilityField.setLayoutParams(layParam);
+
+                    conditionLabel.setLayoutParams(layParamLabel);
+                    allergicLabel.setLayoutParams(layParamLabel);
+                    dailyPrefLabel.setLayoutParams(layParamLabel);
+                    disabilityLabel.setLayoutParams(layParamLabel);
+
+
+
+                    //////
+                    layout.addView(conditionLabel);
+                    layout.addView(conditionField);
+                    layout.addView(allergicLabel);
+                    layout.addView(allergicField);
+                    layout.addView(dailyPrefLabel);
+                    layout.addView(dailyPrefField);
+                    layout.addView(disabilityLabel);
+                    layout.addView(disabilityField);
+                    showInfo.setView(layout);
+
+                    showInfo.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                            .setCancelable(false);
+                            AlertDialog dialog = showInfo.create();
+                            dialog.setOnShowListener(dialog1 -> {
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(android.R.color.holo_blue_light));
+                    });
+
+                    dialog.show();
+                    }
+                });
 
                 rescheduleBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -456,7 +584,7 @@ public class viewAppointmentAll extends AppCompatActivity {
                                     appointmentRescheduleUpdate.put("date", dateStoredReschedule); //carer id.
                                     appointmentRescheduleUpdate.put("time", timeStoredReschedule); //carer name
                                     appointmentRescheduleUpdate.put("address", addressStoredReschedule);
-                                    appointmentRescheduleUpdate.put("postcode", addressStoredReschedule);
+                                    appointmentRescheduleUpdate.put("postcode", postcodeStoredReschedule);
                                     appointmentRescheduleUpdate.put("duration", durationStoredReschedule);
                                     fireStore.collection("appointmentRequest").document(appointmentID)
                                             .update(appointmentRescheduleUpdate);

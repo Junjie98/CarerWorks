@@ -237,10 +237,10 @@ public class MainUIFamilyActivity extends AppCompatActivity {
                         try {
                             Date d = new Date(); //check if it is overdue based on today's date and time. Else, ignore
                             Date b = new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", ""));
-                            System.out.println(b +  "  THIS IS DATE");
-                            System.out.println(" this is today's date " + d);
+                            //System.out.println(b +  "  THIS IS DATE");
+                            //System.out.println(" this is today's date " + d);
                             if(d.before(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() +" "+ document.get("time").toString().replace(" ", "")))) {
-                                System.out.println("HEREERERERERE " + document.getId() + "  === " + document.get("time").toString().replace(" ", ""));
+                                //System.out.println("HEREERERERERE " + document.getId() + "  === " + document.get("time").toString().replace(" ", ""));
                                 dateCheck.add(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse(document.get("date").toString() + " " + document.get("time").toString().replace(" ", "")));
                                 upcomingID.add(document.getId());
                             }
@@ -255,7 +255,6 @@ public class MainUIFamilyActivity extends AppCompatActivity {
                                 if (dateCheck.get(i).before(dateCheck.get(j))) {
                                     smallestDate = dateCheck.get(i);
                                     smallestDateAppointmentID = upcomingID.get(i);
-                                    System.out.println("aaaaaaaaaaaaaaaaglspglapslggggggggggggggggggg " + smallestDateAppointmentID);
                                     fillCardView();
                                     upcomingAppointmentPatient.setVisibility(View.VISIBLE);
                                     cardViewPatientHome.setVisibility(View.VISIBLE);
@@ -267,11 +266,10 @@ public class MainUIFamilyActivity extends AppCompatActivity {
                         fillCardView();
                         upcomingAppointmentPatient.setVisibility(View.VISIBLE);
                         cardViewPatientHome.setVisibility(View.VISIBLE);
-                        System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
-                    } else
-                        cardViewPatientHome.setVisibility(View.VISIBLE);
-                    upcomingAppointmentPatient.setVisibility(View.GONE);
-
+                    } else {
+                        cardViewPatientHome.setVisibility(View.GONE);
+                        upcomingAppointmentPatient.setVisibility(View.GONE);
+                    }
                 }
             }
         });

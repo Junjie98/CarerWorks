@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MakeAppointment extends AppCompatActivity {
 
@@ -51,6 +53,7 @@ public class MakeAppointment extends AppCompatActivity {
     private Button submitBtn;
     private FirebaseFirestore fireStore;
     private ImageView makeAppBackBtn;
+    //private String regexPostcodeValidation = "\\A((GIR 0AA)|(SAN TA1)|[A-I|K-P|R-U|W|Y-Z]0-9[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z]|[A-I|K-P|R-U|W|Y-Z][0-9]0-9[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z]|[A-I|K-P|R-U|W|Y-Z][0-9]A-H|J-K|M-N|P|R-Y[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z]|[A-I|K-P|R-U|W|Y-Z][A-H|K-P|R-U|W|Y]0-9[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z]|[A-I|K-P|R-U|W|Y-Z][A-H|K-P|R-U|W|Y][0-9]0-9[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z]|[A-I|K-P|R-U|W|Y-Z][A-H|K-P|R-U|W|Y][0-9]A-H|J-K|M-N|P|R-Y[0-9][A-B|D-H|J|L|N|P-U|W-Z][A-B|D-H|J|L|N|P-U|W-Z])\\Z";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +76,17 @@ public class MakeAppointment extends AppCompatActivity {
 
     }
 
+    private boolean validatePostcode(String postcode, String postcodeUK){
+        Pattern pattern = Pattern.compile(postcodeUK);
+        Matcher matcher = pattern.matcher(postcode);
+        return matcher.matches();
+    }
+
     private void submitData(){
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validationField() && GlobalVar.user_type != "patientFamily"){
+                if(validationField() && GlobalVar.user_type != "patientFamily") {
                     String addressSubmit = address.getText().toString().trim();
                     String postcodeSubmit = postcode.getText().toString().trim();
                     String dateSubmit = etDate.getText().toString().trim();
@@ -85,34 +94,34 @@ public class MakeAppointment extends AppCompatActivity {
                     String careDurationSubmit = careDuration.getText().toString().trim();
                     String notesSubmit = toCarerNotes.getText().toString().trim();
 
-                    geoLocation();
-                    DocumentReference docRef = fireStore.collection("appointmentRequest").document();
-                    Map<String, Object> appointmentRequest = new HashMap<>();
-                    appointmentRequest.put("user_id",GlobalVar.current_user_id);
-                    appointmentRequest.put("name",GlobalVar.current_user);
-                    appointmentRequest.put("address",addressSubmit);
-                    appointmentRequest.put("postcode",postcodeSubmit);
-                    appointmentRequest.put("date",dateSubmit);
-                    appointmentRequest.put("time",timeStoredSubmit);
-                    appointmentRequest.put("duration",careDurationSubmit);
-                    appointmentRequest.put("notes",notesSubmit);
-                    appointmentRequest.put("status","pending");
-                    docRef.set(appointmentRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            System.out.println(docRef);
-                            Log.d(TAG,"onSuccess: appointment is created by " + GlobalVar.current_user_id);
-                            Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
-                            try{
+                        geoLocation();
+                        DocumentReference docRef = fireStore.collection("appointmentRequest").document();
+                        Map<String, Object> appointmentRequest = new HashMap<>();
+                        appointmentRequest.put("user_id", GlobalVar.current_user_id);
+                        appointmentRequest.put("name", GlobalVar.current_user);
+                        appointmentRequest.put("address", addressSubmit);
+                        appointmentRequest.put("postcode", postcodeSubmit);
+                        appointmentRequest.put("date", dateSubmit);
+                        appointmentRequest.put("time", timeStoredSubmit);
+                        appointmentRequest.put("duration", careDurationSubmit);
+                        appointmentRequest.put("notes", notesSubmit);
+                        appointmentRequest.put("status", "pending");
+                        docRef.set(appointmentRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                System.out.println(docRef);
+                                Log.d(TAG, "onSuccess: appointment is created by " + GlobalVar.current_user_id);
                                 Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            startActivity(new Intent(MakeAppointment.this, MainUIPatientActivity.class));
+                                try {
+                                    Toast.makeText(MakeAppointment.this, "Appointment has been requested successfully.", Toast.LENGTH_SHORT).show();
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                startActivity(new Intent(MakeAppointment.this, MainUIPatientActivity.class));
 
-                        }
-                    });
+                            }
+                        });
                 }
 
                 if(validationField() && GlobalVar.user_type == "patientFamily"){
@@ -183,13 +192,16 @@ public class MakeAppointment extends AppCompatActivity {
         String notesField = toCarerNotes.getText().toString();
 
         if (addressField.isEmpty() || postcodeField.isEmpty() || dateField.isEmpty() || timeStoredField.isEmpty() || careDurationField.isEmpty() || notesField.isEmpty()) {
-            Toast.makeText(this, "Please fill up all the fields before retying.",
+            Toast.makeText(this, "Please fill up all fields.",
                     Toast.LENGTH_SHORT).show(); //error message. toast lenth short = time to be displayed
             result = false;
 
         }
         else{
-            result = true;
+            //if (validatePostcode(postcodeField, regexPostcodeValidation)) {
+                //System.out.println("Correct");
+                result = true;
+           // }
         }
         return result;
     }

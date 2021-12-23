@@ -63,17 +63,16 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
-    Location mLastLocation;
+    private Location mLastLocation;
     //LocationRequest mLocationRequest;
-    Polyline currentPolyline;
-    //private ActivityMapsTrackerBinding binding;
-    MarkerOptions place1,place2;
+    private Polyline currentPolyline;
+    private MarkerOptions place1,place2;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     // private FirebaseAuth firebaseAuth;
-    Address patientAddress;
-    LatLng patientLatLng;
+    private Address patientAddress;
+    private LatLng patientLatLng;
     private static String address, postcode, user_id, name;
     private
     //online geofire live dtb
@@ -277,6 +276,7 @@ public class CarerMapTrackerActivity extends FragmentActivity implements OnMapRe
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         mMap = googleMap;
         mMap.addMarker(place1);
 //        mMap.addMarker(place2);

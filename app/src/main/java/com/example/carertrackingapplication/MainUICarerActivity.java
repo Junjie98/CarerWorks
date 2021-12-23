@@ -302,10 +302,11 @@ public class MainUICarerActivity extends AppCompatActivity {
                         cardViewCarerHome.setVisibility(View.VISIBLE);
                         hasUpcoming = true;
                         System.out.println("aaaaaaaaaaaaaaaagggggggggggggggggggggg " + smallestDateAppointmentID);
-                    } else
+                    } else {
                         cardViewCarerHome.setVisibility(View.GONE);
                         upcomingAppointmentCarer.setVisibility(View.GONE);
-                    hasUpcoming = false;
+                        hasUpcoming = false;
+                    }
 
                 }
             }

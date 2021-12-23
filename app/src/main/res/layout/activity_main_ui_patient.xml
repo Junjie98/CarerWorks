@@ -88,9 +88,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:text="Upcoming Appointment"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewPatientMain"
@@ -98,10 +99,10 @@
             android:layout_height="284dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            app:cardBackgroundColor="#BCBCBC"
+            android:visibility="gone"
+            app:cardBackgroundColor="#B63737"
             app:cardCornerRadius="12dp"
-            app:cardElevation="30dp"
-            android:visibility="gone">
+            app:cardElevation="30dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
